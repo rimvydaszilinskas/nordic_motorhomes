@@ -1,0 +1,29 @@
+html{
+  position: relative;
+  min-height: 100%;
+
+}
+
+body{
+
+}
+
+footer{
+  padding-top: 10px;
+  /* background-color: orange; */
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  min-height: 40px;
+  width: 100%;
+}
+
+.footer-center{
+  text-align: center;
+}
+
+#loginDiv{
+  padding-top: 10%;
+  justify-content: center;
+}
+

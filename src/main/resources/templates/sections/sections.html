@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Sections</title>
+</head>
+<body>
+    <header th:fragment="shared-header">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="#">Navbar</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainMenu">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Vans</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <form th:fragment="editForm">
+            <div class="form-row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="brand">Brand</label>
+                        <input type="text" class="form-control" id="brand" name="brand" placeholder="Volkswagen"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="model">Model</label>
+                        <input type="text" class="form-control" id="model" name="model" placeholder="Golf"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="year">Year</label>
+                        <input type="number" class="form-control" id="year" name="year" placeholder="2018" min="1997" max="2018"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="transmission">Transmission</label>
+                        <select class="form-control" id="transmission" name="transmission">
+                            <option value="fwd">Front wheel drive</option>
+                            <option value="rwd">Rear wheel drive</option>
+                            <option value="awd">All wheel drive</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="gearbox">Gearbox</label>
+                        <select class="form-control" id="gearbox">
+                            <option value="manual">Manual</option>
+                            <option value="automatic">Àutomatic</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="mileage">Mileage</label>
+                        <input type="number" class="form-control" id="mileage" name="mileage" max="500000" />
+                    </div>
+                    <div class="form-group">
+                        <label for="weight">Weight</label>
+                        <input type="number" class="form-control" id="weight" name="weight" min="2000" max="10000" />
+                    </div>
+                    <div class="form-group">
+                        <label for="seats">Seats</label>
+                        <input type="number" class="form-control" id="seats" name="seats" min="2" max="8" />
+                    </div>
+                    <div class="form-group">
+                        <label for="beds">Beds</label>
+                        <input type="number" class="form-control" id="beds" name="beds" min="1" max="4" />
+                    </div>
+                </div>
+            </div>
+            <input type="submit" class="btn btn-success" value="Submit"/>
+            <a class="btn btn-danger" role="btn" href="#">Delete</a>
+        </form>
+    </main>
+</body>
+</html>
