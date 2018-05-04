@@ -124,10 +124,11 @@ public class MotorHouseRepo implements IMotorHouse {
                         result.getInt("bed_count"),
                         result.getInt("seats"),
                         result.getInt("weight"),
-                        result.getString("description"),
+//                        result.getString("description"),
+                        "",
                         result.getString("gearbox"),
                         result.getInt("year"),
-                        result.getInt("mileaage"),
+                        result.getInt("mileage"),
                         result.getString("transmission"),
                         0));
             }
@@ -145,34 +146,39 @@ public class MotorHouseRepo implements IMotorHouse {
     }
 
     @Override
-    public List<MotorHouse> getAllOnManufacturer(String manufacturer) {
+    public List<MotorHouse> getAllOnFilters(String manufacturer, String gearbox, String transmission, int price){
         List<MotorHouse> motorHouses = new LinkedList<>();
-        try{
-            preparedStatement = conn.prepareStatement("SELECT * FROM motorhome WHERE manufacturer=?");
-            preparedStatement.setString(1, manufacturer);
-            result = preparedStatement.executeQuery();
 
-            while(result.next()){
-                motorHouses.add(new MotorHouse(
-                        result.getInt("id"),
-                        result.getString("manufacturer"),
-                        result.getString("model"),
-                        result.getInt("bed_count"),
-                        result.getInt("seats"),
-                        result.getInt("weight"),
-                        result.getString("description"),
-                        result.getString("gearbox"),
-                        result.getInt("year"),
-                        result.getInt("mileaage"),
-                        result.getString("transmission"),
-                        0));
-            }
-
-            return motorHouses;
-        } catch (SQLException ex){
-            ex.printStackTrace();
+        if(!manufacturer.equals("default")){
+             motorHouses = getAllOnManufacturer(manufacturer);
         }
-        return null;
+
+        if(!gearbox.equals("default") && motorHouses.size() != 0){
+            //loop through to check the gearbox
+            List<MotorHouse> temp = new LinkedList<>();
+            for(MotorHouse motorHouse : motorHouses){
+                if(motorHouse.getGearbox().equals(gearbox)){
+                    temp.add(motorHouse);
+                }
+            }
+            motorHouses = temp;
+        } else if(!gearbox.equals("default")){
+            motorHouses = getAllOnGearbox(gearbox);
+        }
+
+        if(!transmission.equals("default") && motorHouses.size() != 0){
+            List<MotorHouse> temp = new LinkedList<>();
+            for(MotorHouse motorHouse : motorHouses){
+                if(motorHouse.getTransmission().equals(transmission)){
+                    temp.add(motorHouse);
+                }
+            }
+            motorHouses = temp;
+        } else if(!transmission.equals("default")){
+            motorHouses = getallOnTransmission(transmission);
+        }
+
+        return motorHouses.size() == 0 ? null : motorHouses;
     }
 
     @Override
@@ -190,10 +196,11 @@ public class MotorHouseRepo implements IMotorHouse {
                         result.getInt("bed_count"),
                         result.getInt("seats"),
                         result.getInt("weight"),
-                        result.getString("description"),
+                        //result.getString("description"),
+                        "",
                         result.getString("gearbox"),
                         result.getInt("year"),
-                        result.getInt("mileaage"),
+                        result.getInt("mileage"),
                         result.getString("transmission"),
                         0);
             }
@@ -257,9 +264,12 @@ public class MotorHouseRepo implements IMotorHouse {
     private int checkIfModelExists(MotorHouse motorHouse){
         //checks the view models if the model already exists
         try{
-            preparedStatement = conn.prepareStatement("SELECT * FROM models WHERE manufacturer=? AND model=?");
+            preparedStatement = conn.prepareStatement("SELECT * FROM models WHERE manufacturer=? AND model=? AND bed_count=? AND seats=? AND weight=?");
             preparedStatement.setString(1, motorHouse.getManufacturer());
             preparedStatement.setString(2, motorHouse.getModel());
+            preparedStatement.setInt(3, motorHouse.getBed_count());
+            preparedStatement.setInt(4, motorHouse.getSeats());
+            preparedStatement.setInt(5, motorHouse.getWeight());
 
             result = preparedStatement.executeQuery();
 
@@ -290,5 +300,66 @@ public class MotorHouseRepo implements IMotorHouse {
         }
 
         return 0;
+    }
+
+    private List<MotorHouse> getAllOnManufacturer(String manufacturer) {
+        List<MotorHouse> motorHouses = new LinkedList<>();
+        try{
+            preparedStatement = conn.prepareStatement("SELECT * FROM motorhome WHERE manufacturer=?");
+            preparedStatement.setString(1, manufacturer);
+            result = preparedStatement.executeQuery();
+
+            while(result.next()){
+                motorHouses.add(new MotorHouse(
+                        result.getInt("id"),
+                        result.getString("manufacturer"),
+                        result.getString("model"),
+                        result.getInt("bed_count"),
+                        result.getInt("seats"),
+                        result.getInt("weight"),
+                        "",
+                        result.getString("gearbox"),
+                        result.getInt("year"),
+                        result.getInt("mileage"),
+                        result.getString("transmission"),
+                        0));
+            }
+
+            return motorHouses;
+        } catch (SQLException ex){
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    private List<MotorHouse> getallOnTransmission(String transmission){
+        List<MotorHouse> motorHouses = new LinkedList<>();
+        try{
+            preparedStatement = conn.prepareStatement("SELECT * FROM motorhome WHERE transmission=?");
+            preparedStatement.setString(1, transmission);
+            result = preparedStatement.executeQuery();
+
+            while(result.next()){
+                motorHouses.add(new MotorHouse(
+                        result.getInt("id"),
+                        result.getString("manufacturer"),
+                        result.getString("model"),
+                        result.getInt("bed_count"),
+                        result.getInt("seats"),
+                        result.getInt("weight"),
+//                        result.getString("description"),
+                        "",
+                        result.getString("gearbox"),
+                        result.getInt("year"),
+                        result.getInt("mileage"),
+                        result.getString("transmission"),
+                        0));
+            }
+
+            return motorHouses;
+        } catch (SQLException ex){
+            ex.printStackTrace();
+        }
+        return null;
     }
 }

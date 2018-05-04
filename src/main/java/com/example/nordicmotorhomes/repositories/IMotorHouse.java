@@ -12,6 +12,6 @@ public interface IMotorHouse {
     List<MotorHouse> getAll();
     List<MotorHouse> getAllOnGearbox(String gearbox);
     List<MotorHouse> getAllOnCategory(String category);
-    List<MotorHouse> getAllOnManufacturer(String manufacturer);
+    List<MotorHouse> getAllOnFilters(String manufacturer, String gearbox, String transmission, int price);
     MotorHouse get(int id);
 }

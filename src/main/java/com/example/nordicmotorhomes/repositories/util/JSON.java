@@ -17,8 +17,8 @@ public class JSON implements IJSON{
 
         if(value.length() > 2)
             if(value.charAt(0) == '"' && value.charAt(1) == '{') {
-                value = new StringBuilder(value).deleteCharAt(0).toString();
-                value = new StringBuilder(value).deleteCharAt(value.length()-1).toString();
+                value = new StringBuilder(value).deleteCharAt(0).
+                        deleteCharAt(value.length()-1).toString();
             }
 
         if(length != 0)

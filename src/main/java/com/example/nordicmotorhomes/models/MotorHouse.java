@@ -14,6 +14,8 @@ public class MotorHouse {
     private int mileage;
     private String transmission;
 
+    public MotorHouse(){}
+
     public MotorHouse(int id, String manufacturer, String model, int bed_count,
                       int seats, int weight, String description, String gearbox,
                       int year, int mileage, String transmission, int power) {

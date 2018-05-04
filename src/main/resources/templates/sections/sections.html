@@ -18,7 +18,7 @@
                         <a class="nav-link" href="/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Vans</a>
+                        <a class="nav-link" href="/motorhouse">Vans</a>
                     </li>
                 </ul>
             </div>
@@ -30,12 +30,12 @@
             <div class="form-row">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="brand">Brand</label>
-                        <input type="text" class="form-control" id="brand" name="brand" placeholder="Volkswagen"/>
+                        <label for="manufacturer">Brand</label>
+                        <input type="text" class="form-control" id="manufacturer" name="manufacturer" placeholder="Volkswagen"/>
                     </div>
                     <div class="form-group">
                         <label for="model">Model</label>
-                        <input type="text" class="form-control" id="model" name="model" placeholder="Golf"/>
+                        <input type="text" class="form-control" id="model" name="model" placeholder="Multivan"/>
                     </div>
                     <div class="form-group">
                         <label for="year">Year</label>
@@ -44,17 +44,18 @@
                     <div class="form-group">
                         <label for="transmission">Transmission</label>
                         <select class="form-control" id="transmission" name="transmission">
-                            <option value="fwd">Front wheel drive</option>
-                            <option value="rwd">Rear wheel drive</option>
-                            <option value="awd">All wheel drive</option>
+                            <option value="FWD">Front wheel drive</option>
+                            <option value="RWD">Rear wheel drive</option>
+                            <option value="AWD">All wheel drive</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="gearbox">Gearbox</label>
-                        <select class="form-control" id="gearbox">
-                            <option value="manual">Manual</option>
-                            <option value="automatic">Àutomatic</option>
+                        <select class="form-control" id="gearbox" name="gearbox">
+                            <option value="Manual">Manual</option>
+                            <option value="Automatic">Automatic</option>
                         </select>
+                        <!--<input type="text" class="form-control" id="gearbox" name="gearbox"/>-->
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -71,10 +72,20 @@
                         <input type="number" class="form-control" id="seats" name="seats" min="2" max="8" />
                     </div>
                     <div class="form-group">
-                        <label for="beds">Beds</label>
-                        <input type="number" class="form-control" id="beds" name="beds" min="1" max="4" />
+                        <label for="bed_count">Beds</label>
+                        <input type="number" class="form-control" id="bed_count" name="bed_count" min="1" max="4" />
+                    </div>
+                    <div class="form-group">
+                        <label for="power">Power</label>
+                        <input type="number" class="form-control" id="power" name="power" min="55" max="200" />
                     </div>
                 </div>
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" class="form-control" name="description"></textarea>
+                </div>
+            </div>
             </div>
             <input type="submit" class="btn btn-success" value="Submit"/>
             <a class="btn btn-danger" role="btn" href="#">Delete</a>
