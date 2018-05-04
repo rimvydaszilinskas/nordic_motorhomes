@@ -1,6 +1,7 @@
 package com.example.nordicmotorhomes.controllers;
 
 import com.example.nordicmotorhomes.models.MotorHouse;
+import com.example.nordicmotorhomes.models.Transmission;
 import com.example.nordicmotorhomes.repositories.MotorHouseRepo;
 import com.example.nordicmotorhomes.repositories.util.JSON;
 import org.springframework.stereotype.Controller;
@@ -26,7 +27,10 @@ public class MotorHouseController {
         model.addAttribute("motorhouses", motorHouses);
         model.addAttribute("sBrand", "default");
         model.addAttribute("sGearbox", "default");
-        model.addAttribute("sTransmission", "default");
+        model.addAttribute("sTransmission", new Transmission("default"));
+        model.addAttribute("transmissions", motorHouseRepo.getAllTransmissions());
+        model.addAttribute("gearboxes", motorHouseRepo.getAllGearboxes());
+        model.addAttribute("manufacturers", motorHouseRepo.getAllManufacturers());
 
         return "motorhouses/display";
     }
@@ -86,6 +90,7 @@ public class MotorHouseController {
                            @RequestParam("gearbox") String gearbox,
                            @RequestParam("transmission") String transmission,
                            @RequestParam("price") String price){
+
         if(brand.equals("default") && gearbox.equals("default") && transmission.equals("default") && price.length() == 0)
             return "redirect:/motorhouse";
 
@@ -97,17 +102,13 @@ public class MotorHouseController {
         if(motorHouses == null)
             motorHouses = new LinkedList<>();
 
-        if(transmission.equals("FWD"))
-            transmission = "Front wheel drive";
-        else if(transmission.equals("RWD"))
-            transmission = "Rear wheel drive";
-        else if(transmission.equals("AWD"))
-            transmission = "All wheel drive";
-
         model.addAttribute("motorhouses", motorHouses);
         model.addAttribute("sBrand", brand);
         model.addAttribute("sGearbox", gearbox);
-        model.addAttribute("sTransmission", transmission);
+        model.addAttribute("sTransmission", new Transmission(transmission));
+        model.addAttribute("transmissions", motorHouseRepo.getAllTransmissions());
+        model.addAttribute("gearboxes", motorHouseRepo.getAllGearboxes());
+        model.addAttribute("manufacturers", motorHouseRepo.getAllManufacturers());
 
         return "motorhouses/display";
     }

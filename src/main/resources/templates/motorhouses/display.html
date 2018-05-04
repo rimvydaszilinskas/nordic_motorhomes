@@ -27,8 +27,9 @@
                         <option th:value="${sBrand}" th:text="${sBrand}"></option>
                     </span>
                     <option value="default"></option>
-                    <option value="Volkswagen">Volkswagen</option>
-                    <option value="Peugeot">Peugeot</option>
+                    <span th:each="manufacturer : ${manufacturers}">
+                        <option th:value="${manufacturer}" th:text="${manufacturer}"></option>
+                    </span>
                   </select>
                 </div>
                 <div class="form-group">
@@ -38,20 +39,21 @@
                         <option th:value="${sGearbox}" th:text="${sGearbox}"></option>
                     </span>
                     <option value="default"></option>
-                    <option value="Manual">Manual</option>
-                    <option value="Automatic">Automatic</option>
+                    <span th:each="gearbox : ${gearboxes}">
+                        <option th:value="${gearbox}" th:text="${gearbox}"></option>
+                    </span>
                   </select>
                 </div>
                 <div class="form-group">
                   <label for="transmission">Transmission</label>
                   <select id="transmission"class="form-control" name="transmission">
-                    <span th:if="${!sTransmission.equals('default')}">
-                        <option th:value="${sTransmission}" th:text="${sTransmission}"></option>
+                    <span th:if="${!sTransmission.name.equals('default')}">
+                        <option th:value="${sTransmission.shortName}" th:text="${sTransmission.name}"></option>
                     </span>
                     <option value="default"></option>
-                    <option value="FWD">Front wheel drive</option>
-                    <option value="RWD">Rear wheel drive</option>
-                    <option value="AWD">All wheel drive</option>
+                    <span th:each="transmission : ${transmissions}">
+                        <option th:value="${transmission.shortName}" th:text="${transmission.name}"></option>
+                    </span>
                   </select>
                 </div>
                 <div class="form-group">

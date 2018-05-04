@@ -1,13 +1,13 @@
 package com.example.nordicmotorhomes.repositories;
 
 import com.example.nordicmotorhomes.models.MotorHouse;
+import com.example.nordicmotorhomes.models.Transmission;
 import com.example.nordicmotorhomes.repositories.util.Database;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -259,6 +259,54 @@ public class MotorHouseRepo implements IMotorHouse {
             ex.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public List<String> getAllManufacturers() {
+        List<String> motorHouses = new LinkedList<>();
+        try{
+            preparedStatement = conn.prepareStatement("SELECT * FROM manufacturers");
+            result = preparedStatement.executeQuery();
+
+            while(result.next()){
+                motorHouses.add(result.getString("manufacturer"));
+            }
+        } catch (SQLException ex){
+            ex.printStackTrace();
+        }
+        return motorHouses;
+    }
+
+    @Override
+    public List<Transmission> getAllTransmissions() {
+        List<Transmission> motorHouses = new LinkedList<>();
+        try{
+            preparedStatement = conn.prepareStatement("SELECT * FROM transmissions");
+            result = preparedStatement.executeQuery();
+
+            while(result.next()){
+                motorHouses.add(new Transmission(result.getString("transmission")));
+            }
+        } catch (SQLException ex){
+            ex.printStackTrace();
+        }
+        return motorHouses;
+    }
+
+    @Override
+    public List<String> getAllGearboxes() {
+        List<String> motorHouses = new LinkedList<>();
+        try{
+            preparedStatement = conn.prepareStatement("SELECT * FROM gearboxes");
+            result = preparedStatement.executeQuery();
+
+            while(result.next()){
+                motorHouses.add(result.getString("gearbox"));
+            }
+        } catch (SQLException ex){
+            ex.printStackTrace();
+        }
+        return motorHouses;
     }
 
     private int checkIfModelExists(MotorHouse motorHouse){

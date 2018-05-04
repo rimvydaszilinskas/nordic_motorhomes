@@ -1,6 +1,7 @@
 package com.example.nordicmotorhomes.repositories;
 
 import com.example.nordicmotorhomes.models.MotorHouse;
+import com.example.nordicmotorhomes.models.Transmission;
 
 import java.util.List;
 
@@ -14,4 +15,7 @@ public interface IMotorHouse {
     List<MotorHouse> getAllOnCategory(String category);
     List<MotorHouse> getAllOnFilters(String manufacturer, String gearbox, String transmission, int price);
     MotorHouse get(int id);
+    List<String> getAllManufacturers();
+    List<Transmission> getAllTransmissions();
+    List<String> getAllGearboxes();
 }
