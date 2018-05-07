@@ -20,6 +20,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/motorhouse">Vans</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/customers">Customers</a>
+                    </li>
                 </ul>
             </div>
         </nav>
@@ -29,21 +32,25 @@
         <form th:fragment="editForm">
             <div class="form-row">
                 <div class="col-md-4">
+                    <div class="form-group" hidden th:if="${motorhouse}">
+                        <input type="text" class="form-control" id="id" name="id" th:value="${motorhouse.id}">
+                    </div>
                     <div class="form-group">
                         <label for="manufacturer">Brand</label>
-                        <input type="text" class="form-control" id="manufacturer" name="manufacturer" placeholder="Volkswagen"/>
+                        <input type="text" class="form-control" id="manufacturer" name="manufacturer" placeholder="Volkswagen" th:value="${motorhouse} ? ${motorhouse.manufacturer} : ''"/>
                     </div>
                     <div class="form-group">
                         <label for="model">Model</label>
-                        <input type="text" class="form-control" id="model" name="model" placeholder="Multivan"/>
+                        <input type="text" class="form-control" id="model" name="model" placeholder="Multivan" th:value="${motorhouse} ? ${motorhouse.model} : ''"/>
                     </div>
                     <div class="form-group">
                         <label for="year">Year</label>
-                        <input type="number" class="form-control" id="year" name="year" placeholder="2018" min="1997" max="2018"/>
+                        <input type="number" class="form-control" id="year" name="year" placeholder="2018" min="1997" max="2018" th:value="${motorhouse} ? ${motorhouse.year} : ''"/>
                     </div>
                     <div class="form-group">
                         <label for="transmission">Transmission</label>
                         <select class="form-control" id="transmission" name="transmission">
+                            <option th:if="${motorhouse}" th:text="${motorhouse.transmission}"></option>
                             <option value="FWD">Front wheel drive</option>
                             <option value="RWD">Rear wheel drive</option>
                             <option value="AWD">All wheel drive</option>
@@ -52,6 +59,7 @@
                     <div class="form-group">
                         <label for="gearbox">Gearbox</label>
                         <select class="form-control" id="gearbox" name="gearbox">
+                            <option th:if="${motorhouse}" th:text="${motorhouse.gearbox}"></option>
                             <option value="Manual">Manual</option>
                             <option value="Automatic">Automatic</option>
                         </select>
@@ -61,34 +69,80 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="mileage">Mileage</label>
-                        <input type="number" class="form-control" id="mileage" name="mileage" max="500000" />
+                        <input type="number" class="form-control" id="mileage" name="mileage" max="500000" th:value="${motorhouse} ? ${motorhouse.mileage} : ''"/>
                     </div>
                     <div class="form-group">
                         <label for="weight">Weight</label>
-                        <input type="number" class="form-control" id="weight" name="weight" min="2000" max="10000" />
+                        <input type="number" class="form-control" id="weight" name="weight" min="2000" max="10000" th:value="${motorhouse} ? ${motorhouse.weight} : ''"/>
                     </div>
                     <div class="form-group">
                         <label for="seats">Seats</label>
-                        <input type="number" class="form-control" id="seats" name="seats" min="2" max="8" />
+                        <input type="number" class="form-control" id="seats" name="seats" min="2" max="8" th:value="${motorhouse} ? ${motorhouse.seats} : ''"/>
                     </div>
                     <div class="form-group">
                         <label for="bed_count">Beds</label>
-                        <input type="number" class="form-control" id="bed_count" name="bed_count" min="1" max="4" />
+                        <input type="number" class="form-control" id="bed_count" name="bed_count" min="1" max="4" th:value="${motorhouse} ? ${motorhouse.bed_count} : ''"/>
                     </div>
                     <div class="form-group">
                         <label for="power">Power</label>
-                        <input type="number" class="form-control" id="power" name="power" min="55" max="200" />
+                        <input type="number" class="form-control" id="power" name="power" min="55" max="200" th:value="${motorhouse} ? ${motorhouse.power} : ''"/>
                     </div>
                 </div>
             <div class="col-md-8">
                 <div class="form-group">
                     <label for="description">Description</label>
-                    <textarea id="description" class="form-control" name="description"></textarea>
+                    <textarea id="description" class="form-control" name="description" th:text="${motorhouse} ? ${motorhouse.description} : ''"></textarea>
                 </div>
             </div>
             </div>
             <input type="submit" class="btn btn-success" value="Submit"/>
             <a class="btn btn-danger" role="btn" href="#">Delete</a>
+        </form>
+
+
+        <form th:fragment="editFormCustomers">
+            <div class="form-row">
+                <div class="col-md-4">
+                    <div class="form-group" hidden th:if="${customer}">
+                        <input type="text" class="form-control" id="id" name="id" th:value="${customer.id}">
+                    </div>
+                    <div class="form-group">
+                        <label for="firstName">First name</label>
+                        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="John" th:value="${customer} ? ${customer.firstName} : ''"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last name</label>
+                        <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Snow" th:value="${customer} ? ${customer.lastName} : ''"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="CPR">CPR</label>
+                        <input type="text" class="form-control" id="CPR" name="CPR" placeholder="100171-0000" th:value="${customer} ? ${customer.CPR} : ''"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="text" class="form-control" id="phone" name="phone" placeholder="+4501010101" th:value="${customer} ? ${customer.phone} : ''"/>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="address">Address</label>
+                        <input type="text" class="form-control" id="address" name="address" placeholder="Street Name 1" th:value="${customer} ? ${customer.address} : ''"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="city">City</label>
+                        <input type="text" class="form-control" id="city" name="city" placeholder="Copenhagen" th:value="${customer} ? ${customer.city} : ''"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="postCode">Postal code</label>
+                        <input type="number" class="form-control" id="postCode" name="postCode" placeholder="1000" th:value="${customer} ? ${customer.postCode} : ''"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="country">Country</label>
+                        <input type="text" class="form-control" id="country" name="country" placeholder="Denmark" th:value="${customer} ? ${customer.Country} : ''"/>
+                    </div>
+                </div>
+            </div>
+            <input type="submit" class="btn btn-success" value="Submit"/>
         </form>
     </main>
 </body>

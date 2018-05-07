@@ -89,7 +89,7 @@ public class MotorHouseController {
                            @RequestParam("brands") String brand,
                            @RequestParam("gearbox") String gearbox,
                            @RequestParam("transmission") String transmission,
-                           @RequestParam("price") String price){
+    @RequestParam("price") String price){
 
         if(brand.equals("default") && gearbox.equals("default") && transmission.equals("default") && price.length() == 0)
             return "redirect:/motorhouse";
@@ -111,5 +111,21 @@ public class MotorHouseController {
         model.addAttribute("manufacturers", motorHouseRepo.getAllManufacturers());
 
         return "motorhouses/display";
+    }
+
+    @GetMapping("/motorhouse/edit/{id}")
+    public String edit(@PathVariable("id")int id, Model model){
+
+        model.addAttribute("motorhouse", motorHouseRepo.get(id));
+
+        return "motorhouses/edit";
+    }
+
+    @PostMapping("/motorhouse/edit")
+    public String edit(@ModelAttribute MotorHouse motorHouse){
+
+        motorHouseRepo.update(motorHouse);
+
+        return "redirect:/motorhouse";
     }
 }

@@ -23,6 +23,21 @@ public class Person {
         this.phone = phone;
     }
 
+    public Person(String firstName, String lastName, String CPR, String address, String postCode, String city, String country, String phone){
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.CPR = CPR;
+        this.address = address;
+        this.postCode = postCode;
+        this.city = city;
+        this.country = country;
+        this.phone = phone;
+    }
+
+    public Person(){
+
+    }
+
     public String getFirstName() {
         return firstName;
     }

@@ -82,6 +82,7 @@
                   <td th:text="${motorhouse.mileage} + ' KM'"></td>
                   <td>
                     <button class="btn btn-secondary details" th:id="details_ + ${motorhouse.id}">Details</button>
+                    <a class="btn btn-success" th:href="'/motorhouse/edit/' + ${motorhouse.id}" role="button">Edit</a>
                     <button class="btn btn-danger delete" th:id="delete_ + ${motorhouse.id}">Delete</button>
                   </td>
                 </tr>
@@ -127,8 +128,10 @@
 
                 </div>
                 <div class="modal-footer">
+                    <a class="btn btn-success" id="detailsBtn" href="" role="button">More Details</a>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Dismiss</button>
-                    <a type="button" class="btn btn-danger" id="deleteBtn" href="">Delete</a>
+                    <a class="btn btn-danger" id="deleteBtn" href="" role="button">Delete</a>
+
                 </div>
             </div>
         </div>

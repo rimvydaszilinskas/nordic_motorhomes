@@ -54,19 +54,38 @@ public class CustomerController {
 
         json.add("name", customer.getFirstName() + " " + customer.getLastName());
         json.add("id", customer.getId());
-        json.add("cpr ", customer.getCPR());
+        json.add("cpr", customer.getCPR());
+        json.add("phone", customer.getPhone());
+        json.add("address", customer.getAddress());
+        json.add("postal", customer.getPostCode());
+        json.add("city", customer.getCity());
+        json.add("country", customer.getCountry());
 
         return json.getJSON();
     }
 
-    @GetMapping("customers/create")
+    @GetMapping("/customers/create")
     public String create(){
-        return "cutomers/create";
+        return "customers/new";
     }
 
-    @PostMapping("customers/create")
+    @PostMapping("/customers/create")
     public String createCustomer(@ModelAttribute Customer customer){
         customerRepository.create(customer);
+
+        return "redirect:/customers";
+    }
+
+    @GetMapping("/customers/delete/{id}")
+    public String delete(@PathVariable("id")int id){
+        customerRepository.delete(id);
+
+        return "redirect:/customers";
+    }
+
+    @PostMapping("/customers/update")
+    public String update(@ModelAttribute Customer customer){
+        customerRepository.update(customer);
 
         return "redirect:/customers";
     }

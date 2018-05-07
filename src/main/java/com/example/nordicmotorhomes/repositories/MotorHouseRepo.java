@@ -93,7 +93,7 @@ public class MotorHouseRepo implements IMotorHouse {
                         result.getInt("bed_count"),
                         result.getInt("seats"),
                         result.getInt("weight"),
-                        "",
+                        result.getString("description"),
                         result.getString("gearbox"),
                         result.getInt("year"),
                         result.getInt("mileage"),
@@ -196,8 +196,7 @@ public class MotorHouseRepo implements IMotorHouse {
                         result.getInt("bed_count"),
                         result.getInt("seats"),
                         result.getInt("weight"),
-                        //result.getString("description"),
-                        "",
+                        result.getString("description"),
                         result.getString("gearbox"),
                         result.getInt("year"),
                         result.getInt("mileage"),
@@ -212,48 +211,90 @@ public class MotorHouseRepo implements IMotorHouse {
 
     @Override
     public boolean update(MotorHouse motorHouse){
-        int modelID = 0;
         try{
-            //check if exists current model
-            preparedStatement = conn.prepareStatement("SELECT * FROM models WHERE manufacturer=? AND model=?");
-            preparedStatement.setString(1, motorHouse.getManufacturer());
-            preparedStatement.setString(2, motorHouse.getModel());
+            //check if the model exists
+            int modelID = checkIfModelExists(motorHouse);
+            int count = 0;
 
-            result = preparedStatement.executeQuery();
+            if(modelID > 0){
+                //check how many motorhomes are there of the same kind
+                preparedStatement = conn.prepareStatement("SELECT COUNT(*) AS counter FROM motorhomes WHERE model=? ");
+                preparedStatement.setInt(1, modelID);
 
-            if(result.next()){
-                //if current model exists check if its only one of a kind
-                if(result.getInt("bed_count") != motorHouse.getBed_count() ||
-                        result.getInt("seats") != motorHouse.getSeats() ||
-                        result.getInt("weight") != motorHouse.getWeight() ||
-                        result.getString("description") != motorHouse.getDescription()){
-                    int id = result.getInt("id");
-                    //if its not the same check if the model has more than one campervan
-                    preparedStatement = conn.prepareStatement("SELECT COUNT(id) FROM motorhome WHERE model_id = ?");
-                    preparedStatement.setInt(1, id);
+                result = preparedStatement.executeQuery();
+                if(result.next()){
+                    count = result.getInt("counter");
+                }
+
+                //if only one, update it
+                if(count == 1){
+                    preparedStatement = conn.prepareStatement("UPDATE models SET manufacturer=?, model=?, bed_count=?, seats=?, weight=?, description=? WHERE id=?");
+                    preparedStatement.setString(1, motorHouse.getManufacturer());
+                    preparedStatement.setString(2, motorHouse.getModel());
+                    preparedStatement.setInt(3, motorHouse.getBed_count());
+                    preparedStatement.setInt(4, motorHouse.getSeats());
+                    preparedStatement.setInt(5, motorHouse.getWeight());
+                    preparedStatement.setString(6, motorHouse.getDescription());
+                    preparedStatement.setInt(7, modelID);
+
+                    if(preparedStatement.executeUpdate() > 0){
+                        return true;
+                    }
+                } else if(count > 1){
+                    //if more but only description is changed, update
+                    preparedStatement = conn.prepareStatement("SELECT * FROM models WHERE id=?");
+                    preparedStatement.setInt(1, modelID);
 
                     result = preparedStatement.executeQuery();
-                    if(result.getInt("count(id)") > 1){
-                        modelID = insertModel(motorHouse);
+                    if(result.next()){
+                        if(result.getString("manufacturer").equals(motorHouse.getManufacturer()) &&
+                                result.getString("model").equals(motorHouse.getModel()) &&
+                                result.getInt("bed_count") == motorHouse.getBed_count() &&
+                                result.getInt("seats") == motorHouse.getSeats() &&
+                                result.getInt("weight") == motorHouse.getWeight()){
+                            if(!result.getString("description").equals(motorHouse.getDescription())){
+                                preparedStatement = conn.prepareStatement("UPDATE models SET description=? WHERE id=?");
+                                preparedStatement.setString(1, motorHouse.getDescription());
+                                preparedStatement.setInt(2, modelID);
+                                preparedStatement.executeUpdate();
+                            }
+                        }
                     }
+                } else {
+                    //if more insert a new model and update the motorhome
+                    modelID = insertModel(motorHouse);
+                }
+
+            } else {
+                //if model does not exist
+                preparedStatement = conn.prepareStatement("INSERT INTO models(manufacturer, model, bed_count, seats, weight, description) VALUES(?, ?, ?, ?, ?, ?)");
+                preparedStatement.setString(1, motorHouse.getManufacturer());
+                preparedStatement.setString(2, motorHouse.getModel());
+                preparedStatement.setInt(3, motorHouse.getBed_count());
+                preparedStatement.setInt(4, motorHouse.getSeats());
+                preparedStatement.setInt(5, motorHouse.getWeight());
+                preparedStatement.setString(6, motorHouse.getDescription());
+
+                if(preparedStatement.executeUpdate() == 0)
+                    return false;
+                preparedStatement = conn.prepareStatement("SELECT MAX(id) AS lastID FROM models");
+                result = preparedStatement.executeQuery();
+
+                if(result.next()){
+                    modelID = result.getInt("lastID");
                 }
             }
-            String sql;
-            if(modelID != 0)
-                sql = "UPDATE motorhomes SET model=" + modelID + ", gearbox=?, year=?, mileage=?, transmission=?";
-            else
-                sql = "UPDATE motorhomes SET gearbox=?, year=?, mileage=?, transmission=?";
 
-            preparedStatement = conn.prepareStatement(sql);
+            preparedStatement = conn.prepareStatement("UPDATE motorhomes SET model=?, gearbox=?, transmission=?, year=?, mileage=? WHERE id=?");
+            preparedStatement.setInt(1, modelID);
+            preparedStatement.setString(2, motorHouse.getGearbox());
+            preparedStatement.setString(3, motorHouse.getTransmission());
+            preparedStatement.setInt(4, motorHouse.getYear());
+            preparedStatement.setInt(5, motorHouse.getMileage());
+            preparedStatement.setInt(6, motorHouse.getId());
 
-            preparedStatement.setString(1, motorHouse.getGearbox());
-            preparedStatement.setInt(2, motorHouse.getYear());
-            preparedStatement.setInt(3, motorHouse.getMileage());
-            preparedStatement.setString(4, motorHouse.getTransmission());
-
-            if(preparedStatement.executeUpdate() > 0){
-                return true;
-            }
+            if(preparedStatement.executeUpdate() == 0)
+                return false;
 
         } catch (SQLException ex){
             ex.printStackTrace();
@@ -318,11 +359,11 @@ public class MotorHouseRepo implements IMotorHouse {
             preparedStatement.setInt(3, motorHouse.getBed_count());
             preparedStatement.setInt(4, motorHouse.getSeats());
             preparedStatement.setInt(5, motorHouse.getWeight());
-
             result = preparedStatement.executeQuery();
 
-            if(result.next())
+            if(result.next()) {
                 return result.getInt("id");
+            }
         } catch (SQLException ex){
             ex.printStackTrace();
         }

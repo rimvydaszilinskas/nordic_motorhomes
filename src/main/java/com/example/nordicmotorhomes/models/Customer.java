@@ -5,4 +5,12 @@ public class Customer extends Person {
     public Customer(int id, String firstName, String lastName, String CPR, String address, String postCode, String city, String country, String phone) {
         super(id, firstName, lastName, CPR, address, postCode, city, country, phone);
     }
+
+    public Customer(String firstName, String lastName, String CPR, String address, String postCode, String city, String country, String phone) {
+        super(firstName, lastName, CPR, address, postCode, city, country, phone);
+    }
+
+    public Customer(){
+        super();
+    }
 }
