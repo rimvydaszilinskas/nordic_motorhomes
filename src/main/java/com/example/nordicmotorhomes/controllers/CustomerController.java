@@ -2,7 +2,7 @@ package com.example.nordicmotorhomes.controllers;
 
 import com.example.nordicmotorhomes.models.Customer;
 import com.example.nordicmotorhomes.repositories.CustomerRepository;
-import com.example.nordicmotorhomes.repositories.util.JSON;
+import com.example.nordicmotorhomes.utilities.JSON;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;

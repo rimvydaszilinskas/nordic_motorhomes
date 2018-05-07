@@ -1,4 +1,4 @@
-package com.example.nordicmotorhomes.repositories.util;
+package com.example.nordicmotorhomes.utilities;
 
 import java.util.ArrayList;
 
