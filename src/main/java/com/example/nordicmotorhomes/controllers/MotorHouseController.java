@@ -16,7 +16,10 @@ public class MotorHouseController {
 
     MotorHouseRepo motorHouseRepo = new MotorHouseRepo();
 
-    @GetMapping("/motorhouse")
+    private static final String defaultPath = "/motorhouse";
+    private static final String defaultFilePath = "motorhouses/";
+
+    @GetMapping(defaultPath)
     public String index(Model model){
         List<MotorHouse> motorHouses = motorHouseRepo.getAll();
 
@@ -32,21 +35,21 @@ public class MotorHouseController {
         model.addAttribute("gearboxes", motorHouseRepo.getAllGearboxes());
         model.addAttribute("manufacturers", motorHouseRepo.getAllManufacturers());
 
-        return "motorhouses/display";
+        return defaultFilePath + "display";
     }
 
-    @GetMapping("/motorhouse/delete/{id}")
+    @GetMapping(defaultPath + "/delete/{id}")
     public String delete(@PathVariable("id") int id){
         motorHouseRepo.delete(id);
-        return "redirect:/motorhouse";
+        return "redirect:" + defaultPath;
     }
 
-    @GetMapping("/motorhouse/addNew")
+    @GetMapping(defaultPath + "/addNew")
     public String addNew(){
-        return "motorhouses/new";
+        return defaultFilePath + "new";
     }
 
-    @PostMapping("/motorhouse/details")
+    @PostMapping(defaultPath + "/details")
     @ResponseBody
     public String details(@RequestParam("id") int id){
         JSON json = new JSON();
@@ -66,7 +69,7 @@ public class MotorHouseController {
         return json.getJSON();
     }
 
-    @PostMapping("/motorhouse/delete/details")
+    @PostMapping(defaultPath + "/delete/details")
     @ResponseBody
     public String deleteDetails(@RequestParam("id") int id){
         //used to display a modal before deleting motorhouse
@@ -78,13 +81,13 @@ public class MotorHouseController {
         return json.getJSON();
     }
 
-    @PostMapping("/motorhouse/create")
+    @PostMapping(defaultPath + "/create")
     public String create(@ModelAttribute MotorHouse motorHouse){
         motorHouseRepo.add(motorHouse);
-        return "redirect:/motorhouse";
+        return "redirect:" + defaultPath;
     }
 
-    @GetMapping("/motorhouse/filter")
+    @GetMapping(defaultPath + "/filter")
     public String filtered(Model model,
                            @RequestParam("brands") String brand,
                            @RequestParam("gearbox") String gearbox,
@@ -92,7 +95,7 @@ public class MotorHouseController {
     @RequestParam("price") String price){
 
         if(brand.equals("default") && gearbox.equals("default") && transmission.equals("default") && price.length() == 0)
-            return "redirect:/motorhouse";
+            return "redirect:" + defaultPath;
 
         if(price.length() == 0)
             price = "0";
@@ -110,22 +113,22 @@ public class MotorHouseController {
         model.addAttribute("gearboxes", motorHouseRepo.getAllGearboxes());
         model.addAttribute("manufacturers", motorHouseRepo.getAllManufacturers());
 
-        return "motorhouses/display";
+        return defaultFilePath + "display";
     }
 
-    @GetMapping("/motorhouse/edit/{id}")
+    @GetMapping(defaultPath + "/edit/{id}")
     public String edit(@PathVariable("id")int id, Model model){
 
         model.addAttribute("motorhouse", motorHouseRepo.get(id));
 
-        return "motorhouses/edit";
+        return defaultFilePath + "edit";
     }
 
-    @PostMapping("/motorhouse/edit")
+    @PostMapping(defaultPath + "/edit")
     public String edit(@ModelAttribute MotorHouse motorHouse){
 
         motorHouseRepo.update(motorHouse);
 
-        return "redirect:/motorhouse";
+        return "redirect:" + defaultPath;
     }
 }

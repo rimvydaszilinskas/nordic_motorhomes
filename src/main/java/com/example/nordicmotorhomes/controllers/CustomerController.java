@@ -14,38 +14,41 @@ public class CustomerController {
     private CustomerRepository customerRepository = new CustomerRepository();
     private List<Customer> customers;
 
-    @GetMapping("/customers")
+    private static final String defaultPath = "/customers";
+    private static final String defaultFilePath = "customers/";
+
+    @GetMapping(defaultPath)
     public String index(Model model){
         customers = customerRepository.getAll();
         model.addAttribute("customers", customers);
-        return "customers/index";
+        return defaultFilePath + "index";
     }
 
-    @GetMapping("/customers/details/{id}")
+    @GetMapping(defaultPath + "/details/{id}")
     public String details(Model model, @PathVariable("id") int id){
         Customer customer = customerRepository.get(id);
 
         model.addAttribute("customer", customer);
 
-        return "customers/display";
+        return defaultFilePath + "display";
     }
 
-    @GetMapping("/customers/edit/{id}")
+    @GetMapping(defaultPath + "/edit/{id}")
     public String edit(Model model, @PathVariable("id") int id){
         Customer customer = customerRepository.get(id);
 
         model.addAttribute("customer", customer);
 
-        return "customers/edit";
+        return defaultFilePath + "edit";
     }
 
-    @PostMapping("/customers/edit")
+    @PostMapping(defaultPath + "/edit")
     public String edit(@ModelAttribute Customer customer){
         customerRepository.update(customer);
-        return "redirect:/customers";
+        return "redirect:" + defaultPath;
     }
 
-    @PostMapping("/customers/details")
+    @PostMapping(defaultPath + "/details")
     @ResponseBody
     public String details(@RequestParam("id")int id){
         JSON json = new JSON();
@@ -64,29 +67,29 @@ public class CustomerController {
         return json.getJSON();
     }
 
-    @GetMapping("/customers/create")
+    @GetMapping(defaultPath + "/create")
     public String create(){
-        return "customers/new";
+        return defaultFilePath + "new";
     }
 
-    @PostMapping("/customers/create")
+    @PostMapping(defaultPath + "/create")
     public String createCustomer(@ModelAttribute Customer customer){
         customerRepository.create(customer);
 
-        return "redirect:/customers";
+        return "redirect:" + defaultPath;
     }
 
-    @GetMapping("/customers/delete/{id}")
+    @GetMapping(defaultPath + "/delete/{id}")
     public String delete(@PathVariable("id")int id){
         customerRepository.delete(id);
 
-        return "redirect:/customers";
+        return "redirect:" + defaultPath;
     }
 
-    @PostMapping("/customers/update")
+    @PostMapping(defaultPath + "/update")
     public String update(@ModelAttribute Customer customer){
         customerRepository.update(customer);
 
-        return "redirect:/customers";
+        return "redirect:" + defaultPath;
     }
 }
