@@ -228,15 +228,14 @@ public class MotorHouseRepo implements IMotorHouse {
 
                 //if only one, update it
                 if(count == 1){
-                    preparedStatement = conn.prepareStatement("UPDATE models SET manufacturer=?, model=?, bed_count=?, seats=?, weight=?, description=?, power=? WHERE id=?");
+                    preparedStatement = conn.prepareStatement("UPDATE models SET manufacturer=?, model=?, bed_count=?, seats=?, weight=?, description=?WHERE id=?");
                     preparedStatement.setString(1, motorHouse.getManufacturer());
                     preparedStatement.setString(2, motorHouse.getModel());
                     preparedStatement.setInt(3, motorHouse.getBed_count());
                     preparedStatement.setInt(4, motorHouse.getSeats());
                     preparedStatement.setInt(5, motorHouse.getWeight());
                     preparedStatement.setString(6, motorHouse.getDescription());
-                    preparedStatement.setInt(7, motorHouse.getPower());
-                    preparedStatement.setInt(8, modelID);
+                    preparedStatement.setInt(7, modelID);
 
                     if(preparedStatement.executeUpdate() > 0){
                         return true;
