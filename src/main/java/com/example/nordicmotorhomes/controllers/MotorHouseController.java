@@ -81,7 +81,7 @@ public class MotorHouseController {
     @PostMapping("/motorhouse/create")
     public String create(@ModelAttribute MotorHouse motorHouse){
         motorHouseRepo.add(motorHouse);
-        return "redirect:/";
+        return "redirect:/motorhouse";
     }
 
     @GetMapping("/motorhouse/filter")

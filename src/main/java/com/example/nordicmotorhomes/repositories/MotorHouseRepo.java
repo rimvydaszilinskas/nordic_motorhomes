@@ -34,12 +34,13 @@ public class MotorHouseRepo implements IMotorHouse {
                 modelID = insertModel(motorHouse);
             }
 
-            preparedStatement = conn.prepareStatement("INSERT INTO motorhomes(model, gearbox, year, mileage, transmission) VALUES(?, ?, ?, ?, ?)");
+            preparedStatement = conn.prepareStatement("INSERT INTO motorhomes(model, gearbox, year, mileage, transmission, power) VALUES(?, ?, ?, ?, ?, ?)");
             preparedStatement.setInt(1, modelID);
             preparedStatement.setString(2, motorHouse.getGearbox());
             preparedStatement.setInt(3, motorHouse.getYear());
             preparedStatement.setInt(4, motorHouse.getMileage());
             preparedStatement.setString(5, motorHouse.getTransmission());
+            preparedStatement.setInt(6, motorHouse.getPower());
 
             if(preparedStatement.executeUpdate() == 1){
                 return true;
@@ -98,7 +99,7 @@ public class MotorHouseRepo implements IMotorHouse {
                         result.getInt("year"),
                         result.getInt("mileage"),
                         result.getString("transmission"),
-                        0));
+                        result.getInt("power")));
             }
 
             return motorHouses;
@@ -124,13 +125,12 @@ public class MotorHouseRepo implements IMotorHouse {
                         result.getInt("bed_count"),
                         result.getInt("seats"),
                         result.getInt("weight"),
-//                        result.getString("description"),
-                        "",
+                        result.getString("description"),
                         result.getString("gearbox"),
                         result.getInt("year"),
                         result.getInt("mileage"),
                         result.getString("transmission"),
-                        0));
+                        result.getInt("power")));
             }
 
             return motorHouses;
@@ -201,7 +201,7 @@ public class MotorHouseRepo implements IMotorHouse {
                         result.getInt("year"),
                         result.getInt("mileage"),
                         result.getString("transmission"),
-                        0);
+                        result.getInt("power"));
             }
         } catch (SQLException ex){
             ex.printStackTrace();
@@ -228,14 +228,15 @@ public class MotorHouseRepo implements IMotorHouse {
 
                 //if only one, update it
                 if(count == 1){
-                    preparedStatement = conn.prepareStatement("UPDATE models SET manufacturer=?, model=?, bed_count=?, seats=?, weight=?, description=? WHERE id=?");
+                    preparedStatement = conn.prepareStatement("UPDATE models SET manufacturer=?, model=?, bed_count=?, seats=?, weight=?, description=?, power=? WHERE id=?");
                     preparedStatement.setString(1, motorHouse.getManufacturer());
                     preparedStatement.setString(2, motorHouse.getModel());
                     preparedStatement.setInt(3, motorHouse.getBed_count());
                     preparedStatement.setInt(4, motorHouse.getSeats());
                     preparedStatement.setInt(5, motorHouse.getWeight());
                     preparedStatement.setString(6, motorHouse.getDescription());
-                    preparedStatement.setInt(7, modelID);
+                    preparedStatement.setInt(7, motorHouse.getPower());
+                    preparedStatement.setInt(8, modelID);
 
                     if(preparedStatement.executeUpdate() > 0){
                         return true;
@@ -267,13 +268,14 @@ public class MotorHouseRepo implements IMotorHouse {
 
             } else {
                 //if model does not exist
-                preparedStatement = conn.prepareStatement("INSERT INTO models(manufacturer, model, bed_count, seats, weight, description) VALUES(?, ?, ?, ?, ?, ?)");
+                preparedStatement = conn.prepareStatement("INSERT INTO models(manufacturer, model, bed_count, seats, weight, description, power) VALUES(?, ?, ?, ?, ?, ?, ?)");
                 preparedStatement.setString(1, motorHouse.getManufacturer());
                 preparedStatement.setString(2, motorHouse.getModel());
                 preparedStatement.setInt(3, motorHouse.getBed_count());
                 preparedStatement.setInt(4, motorHouse.getSeats());
                 preparedStatement.setInt(5, motorHouse.getWeight());
                 preparedStatement.setString(6, motorHouse.getDescription());
+                preparedStatement.setInt(7, motorHouse.getPower());
 
                 if(preparedStatement.executeUpdate() == 0)
                     return false;
@@ -285,13 +287,14 @@ public class MotorHouseRepo implements IMotorHouse {
                 }
             }
 
-            preparedStatement = conn.prepareStatement("UPDATE motorhomes SET model=?, gearbox=?, transmission=?, year=?, mileage=? WHERE id=?");
+            preparedStatement = conn.prepareStatement("UPDATE motorhomes SET model=?, gearbox=?, transmission=?, year=?, mileage=?, power=? WHERE id=?");
             preparedStatement.setInt(1, modelID);
             preparedStatement.setString(2, motorHouse.getGearbox());
             preparedStatement.setString(3, motorHouse.getTransmission());
             preparedStatement.setInt(4, motorHouse.getYear());
             preparedStatement.setInt(5, motorHouse.getMileage());
             preparedStatement.setInt(6, motorHouse.getId());
+            preparedStatement.setInt(7, motorHouse.getPower());
 
             if(preparedStatement.executeUpdate() == 0)
                 return false;
@@ -406,12 +409,12 @@ public class MotorHouseRepo implements IMotorHouse {
                         result.getInt("bed_count"),
                         result.getInt("seats"),
                         result.getInt("weight"),
-                        "",
+                        result.getString("description"),
                         result.getString("gearbox"),
                         result.getInt("year"),
                         result.getInt("mileage"),
                         result.getString("transmission"),
-                        0));
+                        result.getInt("power")));
             }
 
             return motorHouses;
@@ -436,13 +439,12 @@ public class MotorHouseRepo implements IMotorHouse {
                         result.getInt("bed_count"),
                         result.getInt("seats"),
                         result.getInt("weight"),
-//                        result.getString("description"),
-                        "",
+                        result.getString("description"),
                         result.getString("gearbox"),
                         result.getInt("year"),
                         result.getInt("mileage"),
                         result.getString("transmission"),
-                        0));
+                        result.getInt("power")));
             }
 
             return motorHouses;
