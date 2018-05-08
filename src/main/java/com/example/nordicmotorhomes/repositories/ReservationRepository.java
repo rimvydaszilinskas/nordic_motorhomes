@@ -62,7 +62,7 @@ public class ReservationRepository implements IReservation {
                 reservations.add(new Reservation(result.getInt("id"),
                         result.getDate("date_from"),
                         result.getDate("date_to"),
-                        result.getDate("booking_date"),
+                        result.getDate("date_booked"),
                         result.getString("status"),
                         result.getInt("customer_id"),
                         result.getString("firstname") + " " + result.getString("lastname"),
@@ -80,7 +80,7 @@ public class ReservationRepository implements IReservation {
         List<Reservation> reservations = new LinkedList<>();
 
         try{
-            preparedStatement = conn.prepareStatement("SELECT * FROM bookings WHERE date_to BETWEEN ? AND ? OR date_from BETWEEN ? AND ?");
+            preparedStatement = conn.prepareStatement("SELECT * FROM bookings WHERE (date_to BETWEEN ? AND ?) OR (date_from BETWEEN ? AND ?)");
             preparedStatement.setString(1, from.toString());
             preparedStatement.setString(2, to.toString());
             preparedStatement.setString(3, from.toString());
@@ -92,7 +92,7 @@ public class ReservationRepository implements IReservation {
                 reservations.add(new Reservation(result.getInt("id"),
                         result.getDate("date_from"),
                         result.getDate("date_to"),
-                        result.getDate("booking_date"),
+                        result.getDate("date_booked"),
                         result.getString("status"),
                         result.getInt("customer_id"),
                         result.getString("firstname") + " " + result.getString("lastname"),
@@ -120,7 +120,7 @@ public class ReservationRepository implements IReservation {
                 reservations.add(new Reservation(result.getInt("id"),
                         result.getDate("date_from"),
                         result.getDate("date_to"),
-                        result.getDate("booking_date"),
+                        result.getDate("date_booked"),
                         result.getString("status"),
                         result.getInt("customer_id"),
                         result.getString("firstname") + " " + result.getString("lastname"),
@@ -147,7 +147,7 @@ public class ReservationRepository implements IReservation {
                 reservations.add(new Reservation(result.getInt("id"),
                         result.getDate("date_from"),
                         result.getDate("date_to"),
-                        result.getDate("booking_date"),
+                        result.getDate("date_booked"),
                         result.getString("status"),
                         result.getInt("customer_id"),
                         result.getString("firstname") + " " + result.getString("lastname"),

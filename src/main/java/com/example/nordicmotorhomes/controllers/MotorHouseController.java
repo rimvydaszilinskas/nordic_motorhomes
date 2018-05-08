@@ -51,7 +51,7 @@ public class MotorHouseController {
 
     @PostMapping(defaultPath + "/details")
     @ResponseBody
-    public String details(@RequestParam("id") int id){
+    public String JSONDetails(@RequestParam("id") int id){
         JSON json = new JSON();
         MotorHouse motorHouse = motorHouseRepo.get(id);
         json.add("manufacturer", motorHouse.getManufacturer())
@@ -126,9 +126,13 @@ public class MotorHouseController {
 
     @PostMapping(defaultPath + "/edit")
     public String edit(@ModelAttribute MotorHouse motorHouse){
-
         motorHouseRepo.update(motorHouse);
-
         return "redirect:" + defaultPath;
+    }
+
+    @GetMapping(defaultPath + "/details/{id}")
+    public String details(@PathVariable("id")int id){
+        System.out.println(id);
+        return defaultFilePath + "display";
     }
 }

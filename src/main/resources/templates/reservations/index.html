@@ -17,22 +17,41 @@
 
 <main>
     <div class="container">
-        <div class="col-md-9">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">From</th>
-                    <th scope="col">To</th>
-                    <th scope="col">Customer</th>
-                    <th scope="col">Camper van</th>
-                    <th scope="col"></th>
-                </tr>
-                </thead>
-                <tbody>
+        <div class="row">
+            <div class="col-md-3">
 
-                </tbody>
-            </table>
-            <a class="btn btn-success" href="/customers/create">Add new</a>
+            </div>
+            <div class="col-md-9">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">From</th>
+                        <th scope="col">To</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Camper van</th>
+                        <th scope="col">Status</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="reservation : ${reservations}">
+                        <td scope="row" th:text="${reservation.id}"></td>
+                        <td th:text="${reservation.dateFrom}"></td>
+                        <td th:text="${reservation.dateTo}"></td>
+                        <td><a th:text="${reservation.customerName}" th:href="'/customers/details/' + ${reservation.customerID}"></a></td>
+                        <td><a th:text="${reservation.motorhouseName}" th:href="'/motorhouse/details/' + ${reservation.motorhouseID}" </td>
+                        <td th:text="${reservation.status}"></td>
+                        <td>
+                            <a class="btn btn-secondary" th:href="'/reservation/details/' + ${reservation.id}" role="button">Details</a>
+                            <a class="btn btn-success" th:href="'/reservation/edit/' + ${reservation.id}" role="button">Edit</a>
+                            <button class="btn btn-danger delete" th:id="'delete_' + ${reservation.id}">Delete</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <a class="btn btn-success" href="/reservation/reserve">New Reservation</a>
+            </div>
         </div>
     </div>
 </main>
@@ -48,9 +67,29 @@
         </div>
     </div>
 </footer>
+
+<div class="modal fade" id="delete_modal" tabindex="-1" role="dialog" aria-labelledby="Details modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <a class="btn btn-danger" id="deleteBtn" href="" role="button">Delete</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Dismiss</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="http://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
-<script src="display.js"></script>
+<script src="reservations.js"></script>
 </body>
 </html>

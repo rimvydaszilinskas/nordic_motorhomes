@@ -1,7 +1,10 @@
 package com.example.nordicmotorhomes.controllers;
 
 import com.example.nordicmotorhomes.models.Customer;
+import com.example.nordicmotorhomes.models.Reservation;
 import com.example.nordicmotorhomes.repositories.CustomerRepository;
+import com.example.nordicmotorhomes.repositories.ICustomer;
+import com.example.nordicmotorhomes.repositories.ReservationRepository;
 import com.example.nordicmotorhomes.utilities.JSON;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,7 +14,7 @@ import java.util.List;
 
 @Controller
 public class CustomerController {
-    private CustomerRepository customerRepository = new CustomerRepository();
+    private ICustomer customerRepository = new CustomerRepository();
     private List<Customer> customers;
 
     private static final String defaultPath = "/customers";
@@ -27,9 +30,9 @@ public class CustomerController {
     @GetMapping(defaultPath + "/details/{id}")
     public String details(Model model, @PathVariable("id") int id){
         Customer customer = customerRepository.get(id);
-
+        List<Reservation> reservations = new ReservationRepository().getCustomerReservation(id);
         model.addAttribute("customer", customer);
-
+        model.addAttribute("reservations", reservations);
         return defaultFilePath + "display";
     }
 

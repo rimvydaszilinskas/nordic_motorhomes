@@ -18,6 +18,38 @@
     <main>
       <div class="container">
         <div class="row">
+          <div class="col">
+            <h3><span th:text="${customer.firstName} + ' ' + ${customer.lastName}"></span></h3>
+            <p><b>CPR: </b><span th:text="${customer.CPR}"></span></p>
+            <p><b>Phone: </b><span th:text="${customer.phone}"></span></p>
+            <p><b>Address: </b><span th:text="${customer.address} + ', ' + ${customer.city} + ' ' + ${customer.postCode} + ', ' + ${customer.country}"></span></p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <h3>Bookings</h3>
+            <table class="table">
+              <thead>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">From</th>
+                <th scope="col">To</th>
+                <th scope="col">Camper van</th>
+                <th scope="col">Status</th>
+                <th scope="col"></th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:each="reservation : ${reservations}">
+                <td scope="row" th:text="${reservation.id}"></td>
+                <td th:text="${reservation.dateFrom}"></td>
+                <td th:text="${reservation.dateTo}"></td>
+                <td><a th:text="${reservation.motorhouseName}" th:href="'/motorhouse/details/' + ${reservation.motorhouseID}" </td>
+                <td th:text="${reservation.status}"></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </main>
