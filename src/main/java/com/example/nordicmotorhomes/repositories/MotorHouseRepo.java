@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -349,6 +350,45 @@ public class MotorHouseRepo implements IMotorHouse {
         } catch (SQLException ex){
             ex.printStackTrace();
         }
+        return motorHouses;
+    }
+
+    @Override
+    public List<MotorHouse> getAllFreeMotorhouses(String from, String to, int seats, int beds){
+        List<MotorHouse> motorHouses = new LinkedList<>();
+
+        try{
+            preparedStatement = conn.prepareStatement("SELECT * FROM motorhome WHERE id NOT IN " +
+                    "(SELECT motorhome_id FROM reservations WHERE date_from BETWEEN ? AND ? OR " +
+                    "date_to BETWEEN ? AND ?) AND seats >= ? AND bed_count >= ?;");
+
+            preparedStatement.setString(1, from);
+            preparedStatement.setString(2, to);
+            preparedStatement.setString(3, from);
+            preparedStatement.setString(4, to);
+            preparedStatement.setInt(5, seats);
+            preparedStatement.setInt(6, beds);
+
+            result = preparedStatement.executeQuery();
+
+            while(result.next()){
+                motorHouses.add(new MotorHouse(result.getInt("id"),
+                        result.getString("manufacturer"),
+                        result.getString("model"),
+                        result.getInt("bed_count"),
+                        result.getInt("seats"),
+                        result.getInt("weight"),
+                        result.getString("description"),
+                        result.getString("gearbox"),
+                        result.getInt("year"),
+                        result.getInt("mileage"),
+                        result.getString("transmission"),
+                        result.getInt("power")));
+            }
+        } catch (SQLException ex){
+            System.out.println("get all free" + ex.getSQLState());
+        }
+
         return motorHouses;
     }
 

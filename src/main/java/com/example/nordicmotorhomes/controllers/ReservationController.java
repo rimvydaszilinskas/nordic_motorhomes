@@ -1,11 +1,15 @@
 package com.example.nordicmotorhomes.controllers;
 
+import com.example.nordicmotorhomes.models.MotorHouse;
 import com.example.nordicmotorhomes.models.Reservation;
+import com.example.nordicmotorhomes.repositories.MotorHouseRepo;
 import com.example.nordicmotorhomes.repositories.ReservationRepository;
 import com.example.nordicmotorhomes.utilities.JSON;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 public class ReservationController {
@@ -26,8 +30,14 @@ public class ReservationController {
     public String search(@RequestParam("dateFrom")String dateFrom,
                          @RequestParam("dateTo")String dateTo,
                          @RequestParam("seats")String seats,
-                         @RequestParam("beds")String beds){
-        return defaultFilePath + "search";
+                         @RequestParam("beds")String beds,
+                         Model model){
+        //get free motorhouses
+        List<MotorHouse> motorHouses = new MotorHouseRepo().getAllFreeMotorhouses(dateFrom, dateTo, Integer.parseInt(seats), Integer.parseInt(beds));
+
+        model.addAttribute("motorhouses", motorHouses);
+
+        return defaultFilePath + "/results";
     }
 
     @GetMapping(defaultPath + "/reserve")
@@ -51,5 +61,11 @@ public class ReservationController {
     public  String delete(@PathVariable("id")int id){
         reservationRepository.delete(id);
         return "redirect:" + defaultPath;
+    }
+
+    @GetMapping(defaultPath + "/reserve/{motorhouseID}")
+    public String reserve(@PathVariable("motorhouseID")int id){
+
+        return "";
     }
 }

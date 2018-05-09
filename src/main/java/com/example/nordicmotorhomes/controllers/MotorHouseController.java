@@ -135,4 +135,12 @@ public class MotorHouseController {
         System.out.println(id);
         return defaultFilePath + "display";
     }
+
+    @PostMapping(defaultPath + "/fullDetails")
+    @ResponseBody
+    public String fullDetails(@RequestParam("id")int id){
+        JSON json = new JSON();
+
+        return json.getJSON();
+    }
 }

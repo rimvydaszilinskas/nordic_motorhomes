@@ -2,6 +2,7 @@ package com.example.nordicmotorhomes.repositories;
 
 import com.example.nordicmotorhomes.models.Reservation;
 import com.example.nordicmotorhomes.repositories.util.Database;
+import com.example.nordicmotorhomes.utilities.JSON;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -131,6 +132,24 @@ public class ReservationRepository implements IReservation {
             System.out.println(ex.getSQLState());
         }
         return reservations;
+    }
+
+    @Override
+    public JSON getLastReservation(int vanID){
+        JSON json = new JSON();
+
+        try{
+            preparedStatement = conn.prepareStatement("SELECT date_from, date_to FROM reservations WHERE motorhome_id=? AND ");
+            preparedStatement.setInt(1, vanID);
+
+            result = preparedStatement.executeQuery();
+
+            while(result.next()){}
+        }catch (SQLException ex){
+            System.out.println(ex.getSQLState());
+        }
+
+        return json;
     }
 
     @Override
