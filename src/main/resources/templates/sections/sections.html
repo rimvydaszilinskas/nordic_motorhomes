@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
-<head>
+<head th:fragment="head">
     <meta charset="UTF-8">
-    <title>Sections</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <title th:text="${title} ? ${title} : 'Motorhomes'"></title>
 </head>
 <body>
     <header th:fragment="shared-header">
@@ -149,5 +153,17 @@
             <input type="submit" class="btn btn-success" value="Submit"/>
         </form>
     </main>
+
+    <footer th:fragment="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2 offset-md-5 footer-center">
+                    <p>
+                        2018
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>

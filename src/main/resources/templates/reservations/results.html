@@ -1,94 +1,79 @@
 <!doctype html>
 <html lang="en" xmlns:th="">
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <head th:include="sections/sections :: head">
+    </head>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
-    <link rel="stylesheet" href="../style.css">
-    <title>MotorHomes</title>
-</head>
-<body>
-<header th:include="sections/sections :: shared-header">
+    <body>
+        <header th:include="sections/sections :: shared-header">
 
-</header>
+        </header>
 
-<main>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3">
+        <main>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">
 
+                    </div>
+                    <div class="col-md-9">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Year</th>
+                                <th scope="col">Gearbox</th>
+                                <th scope="col">Transmission</th>
+                                <th scope="col">Seats/Beds</th>
+                                <th scope="col"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="motorhouse : ${motorhouses}">
+                                <td scope="row" th:text="${motorhouse.id}"></td>
+                                <td th:text="${motorhouse.manufacturer} + ' ' + ${motorhouse.model}"></td>
+                                <td th:text="${motorhouse.year}"></td>
+                                <td th:text="${motorhouse.gearbox}"></td>
+                                <td th:text="${motorhouse.transmission}"></td>
+                                <td th:text="${motorhouse.seats} + '/' + ${motorhouse.bed_count}"></td>
+                                <td>
+                                    <button class="btn btn-secondary motorhouseDetails" th:id="'motorhouse_' + ${motorhouse.id}">Details</button>
+                                    <a class="btn btn-success" th:href="'/reservation/reserve/' + ${motorhouse.id} + '/' + ${dateFrom} + '/' + ${dateTo}" role="button">Reserve</a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <a class="btn btn-success" href="/reservation/reserve">New Reservation</a>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-9">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Year</th>
-                        <th scope="col">Gearbox</th>
-                        <th scope="col">Transmission</th>
-                        <th scope="col">Seats/Beds</th>
-                        <th scope="col"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr th:each="motorhouse : ${motorhouses}">
-                        <td scope="row" th:text="${motorhouse.id}"></td>
-                        <td th:text="${motorhouse.manufacturer} + ' ' + ${motorhouse.model}"></td>
-                        <td th:text="${motorhouse.year}"></td>
-                        <td th:text="${motorhouse.gearbox}"></td>
-                        <td th:text="${motorhouse.transmission}"></td>
-                        <td th:text="${motorhouse.seats} + '/' + ${motorhouse.bed_count}"></td>
-                        <td>
-                            <button class="btn btn-secondary motorhouseDetails" th:id="'motorhouse_' + ${motorhouse.id}">Details</button>
-                            <a class="btn btn-success" th:href="'/reservation/reserve/' + ${motorhouse.id} + '/' + ${dateFrom} + '/' + ${dateTo}" role="button">Reserve</a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-                <a class="btn btn-success" href="/reservation/reserve">New Reservation</a>
-            </div>
-        </div>
-    </div>
-</main>
+        </main>
 
-<footer>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-2 offset-md-5 footer-center">
-                <p>
-                    2018
-                </p>
-            </div>
-        </div>
-    </div>
-</footer>
+        <footer th:include="sections/sections :: footer">
 
-<div class="modal fade" id="delete_modal" tabindex="-1" role="dialog" aria-labelledby="Details modal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Delete</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
+        </footer>
 
-            </div>
-            <div class="modal-footer">
-                <a class="btn btn-danger" id="deleteBtn" href="" role="button">Delete</a>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Dismiss</button>
+        <div class="modal fade" id="delete_modal" tabindex="-1" role="dialog" aria-labelledby="Details modal" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Delete</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                    <div class="modal-footer">
+                        <a class="btn btn-danger" id="deleteBtn" href="" role="button">Delete</a>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Dismiss</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-<script src="http://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
-<script src="reservations.js"></script>
-</body>
+        <script src="http://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+        <script src="reservations.js"></script>
+    </body>
 </html>
