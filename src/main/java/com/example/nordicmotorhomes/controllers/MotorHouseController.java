@@ -3,6 +3,7 @@ package com.example.nordicmotorhomes.controllers;
 import com.example.nordicmotorhomes.models.MotorHouse;
 import com.example.nordicmotorhomes.models.Transmission;
 import com.example.nordicmotorhomes.repositories.MotorHouseRepo;
+import com.example.nordicmotorhomes.repositories.ReservationRepository;
 import com.example.nordicmotorhomes.utilities.JSON;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +16,7 @@ import java.util.List;
 public class MotorHouseController {
 
     MotorHouseRepo motorHouseRepo = new MotorHouseRepo();
+    ReservationRepository reservationRepository = new ReservationRepository();
 
     private static final String defaultPath = "/motorhouse";
     private static final String defaultFilePath = "motorhouses/";
@@ -131,9 +133,12 @@ public class MotorHouseController {
     }
 
     @GetMapping(defaultPath + "/details/{id}")
-    public String details(@PathVariable("id")int id){
-        System.out.println(id);
-        return defaultFilePath + "display";
+    public String details(@PathVariable("id")int id, Model model){
+
+        model.addAttribute("motorhouse", motorHouseRepo.get(id));
+        model.addAttribute("reservations", reservationRepository.getVehicleReservations(id));
+
+        return defaultFilePath + "details";
     }
 
     @PostMapping(defaultPath + "/fullDetails")

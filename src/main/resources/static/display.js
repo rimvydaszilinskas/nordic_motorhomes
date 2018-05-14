@@ -8,12 +8,11 @@ $(".delete").on("click", function(){
         success: function(response){
             var object = JSON.parse(response);
             $(".modal-body").html("Are you sure you want to delete " + object.model + " (ID : " + object.id + ")?");
-        },
+            $("#detailsBtn").hide();
+            $("#deleteBtn").attr("href", "/motorhouse/delete/" + id).show();
+            $("#delete_modal").modal("show");
+        }
     });
-
-    $("#deleteBtn").attr("href", "/motorhouse/delete/" + id);
-    $("#deleteBtn").show();
-    $("#delete_modal").modal("show");
 });
 
 $(".details").on("click", function () {
@@ -33,8 +32,9 @@ $(".details").on("click", function () {
                         "<br/>Beds: " + object.bed_count +
                         "<br/>Transmission: " + object.transmission +
                         "<br/>Mileage: " + object.mileage + " km."+
-                        "<br/>Power: " + object.power +
-                        "kW.</p>";
+                        "<br/>Power: " + object.power + "kW.</p>";
+
+           $("#detailsBtn").attr("href", "/motorhouse/details/" + id).show();
            $("#deleteBtn").hide();
            $(".modal-body").html(string);
            $("#delete_modal").modal("show");
