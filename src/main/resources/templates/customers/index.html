@@ -19,8 +19,12 @@
       <div class="container">
         <div class="row">
           <div class="col-md-3">
-            <form method="get" action="/motorhouse/filter">
-
+            <p class="lead">Search</p>
+            <form method="POST" action="/customers/filter">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input class="form-control" type="text" id="name" name="name">
+                </div>
                 <button type="submit" class="btn btn-info">Search</button>
             </form>
           </div>

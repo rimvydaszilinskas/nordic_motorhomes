@@ -95,4 +95,11 @@ public class CustomerController {
 
         return "redirect:" + defaultPath;
     }
+
+    @PostMapping(defaultPath + "/filter")
+    public String filter(@RequestParam("name") String name, Model model){
+        customers = customerRepository.getLike(name);
+        model.addAttribute("customers", customers);
+        return defaultFilePath + "index";
+    }
 }

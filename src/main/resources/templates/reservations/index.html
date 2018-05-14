@@ -17,11 +17,19 @@
 
 <main>
     <div class="container">
-        <div class="row">
-            <div class="col-md-3">
-
+        <div class="row" th:if="${status != null}">
+            <div class="col">
+                <div th:if="${status}" class="alert alert-success" role="alert">
+                    Reservation successful!
+                </div>
+                <div th:if="${!status}" class="alert alert-danger" role="alert">
+                    Reservation could not be executed!
+                </div>
             </div>
-            <div class="col-md-9">
+        </div>
+        <div class="row">
+
+            <div class="col">
                 <table class="table">
                     <thead>
                     <tr>

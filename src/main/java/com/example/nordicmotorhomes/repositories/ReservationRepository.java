@@ -36,9 +36,9 @@ public class ReservationRepository implements IReservation {
 
             if(result.next()){
                 return new Reservation(result.getInt("id"),
-                        result.getDate("date_from"),
-                        result.getDate("date_to"),
-                        result.getDate("booking_date"),
+                        result.getDate("date_from").toString(),
+                        result.getDate("date_to").toString(),
+                        result.getDate("booking_date").toString(),
                         result.getString("status"),
                         result.getInt("customer_id"),
                         result.getString("firstname") + " " + result.getString("lastname"),
@@ -55,15 +55,17 @@ public class ReservationRepository implements IReservation {
     public List<Reservation> getAll() {
         List<Reservation> reservations = new LinkedList<>();
         try{
-            preparedStatement = conn.prepareStatement("SELECT * FROM bookings");
+            preparedStatement = conn.prepareStatement("SELECT * FROM bookings WHERE date_from > ? OR status != 'finished' ORDER BY date_from ASC");
+
+            preparedStatement.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
 
             result = preparedStatement.executeQuery();
 
             while(result.next()){
                 reservations.add(new Reservation(result.getInt("id"),
-                        result.getDate("date_from"),
-                        result.getDate("date_to"),
-                        result.getDate("date_booked"),
+                        result.getDate("date_from").toString(),
+                        result.getDate("date_to").toString(),
+                        result.getDate("date_booked").toString(),
                         result.getString("status"),
                         result.getInt("customer_id"),
                         result.getString("firstname") + " " + result.getString("lastname"),
@@ -81,7 +83,7 @@ public class ReservationRepository implements IReservation {
         List<Reservation> reservations = new LinkedList<>();
 
         try{
-            preparedStatement = conn.prepareStatement("SELECT * FROM bookings WHERE (date_to BETWEEN ? AND ?) OR (date_from BETWEEN ? AND ?)");
+            preparedStatement = conn.prepareStatement("SELECT * FROM bookings WHERE (date_to BETWEEN ? AND ?) OR (date_from BETWEEN ? AND ?) ORDER BY id DESC, dateFrom asc");
             preparedStatement.setString(1, from.toString());
             preparedStatement.setString(2, to.toString());
             preparedStatement.setString(3, from.toString());
@@ -91,9 +93,9 @@ public class ReservationRepository implements IReservation {
 
             while(result.next()){
                 reservations.add(new Reservation(result.getInt("id"),
-                        result.getDate("date_from"),
-                        result.getDate("date_to"),
-                        result.getDate("date_booked"),
+                        result.getDate("date_from").toString(),
+                        result.getDate("date_to").toString(),
+                        result.getDate("date_booked").toString(),
                         result.getString("status"),
                         result.getInt("customer_id"),
                         result.getString("firstname") + " " + result.getString("lastname"),
@@ -119,9 +121,9 @@ public class ReservationRepository implements IReservation {
 
             while(result.next()){
                 reservations.add(new Reservation(result.getInt("id"),
-                        result.getDate("date_from"),
-                        result.getDate("date_to"),
-                        result.getDate("date_booked"),
+                        result.getDate("date_from").toString(),
+                        result.getDate("date_to").toString(),
+                        result.getDate("date_booked").toString(),
                         result.getString("status"),
                         result.getInt("customer_id"),
                         result.getString("firstname") + " " + result.getString("lastname"),
@@ -164,9 +166,9 @@ public class ReservationRepository implements IReservation {
 
             while(result.next()){
                 reservations.add(new Reservation(result.getInt("id"),
-                        result.getDate("date_from"),
-                        result.getDate("date_to"),
-                        result.getDate("date_booked"),
+                        result.getDate("date_from").toString(),
+                        result.getDate("date_to").toString(),
+                        result.getDate("date_booked").toString(),
                         result.getString("status"),
                         result.getInt("customer_id"),
                         result.getString("firstname") + " " + result.getString("lastname"),
@@ -218,12 +220,12 @@ public class ReservationRepository implements IReservation {
         try {
             preparedStatement = conn.prepareStatement("INSERT INTO reservations(date_from, date_to, motorhome_id, customer_id, status, date_booked) VALUES (?, ?, ?, ?, ?, ?)");
 
-            preparedStatement.setString(1, reservation.getDateFrom().toString());
-            preparedStatement.setString(2, reservation.getDateTo().toString());
+            preparedStatement.setDate(1, java.sql.Date.valueOf(reservation.getDateFrom()));
+            preparedStatement.setDate(2, java.sql.Date.valueOf(reservation.getDateTo()));
             preparedStatement.setInt(3, reservation.getMotorhouseID());
             preparedStatement.setInt(4, reservation.getCustomerID());
             preparedStatement.setString(5, reservation.getStatus());
-            preparedStatement.setString(6, LocalDate.now().toString());
+            preparedStatement.setDate(6, java.sql.Date.valueOf(LocalDate.now().toString()));
 
             if(preparedStatement.executeUpdate() != 0){
                 return true;

@@ -135,4 +135,36 @@ public class CustomerRepository implements ICustomer{
         }
         return false;
     }
+
+    @Override
+    public List<Customer> getLike(String name){
+        List<Customer> customers = new LinkedList<>();
+        StringBuilder str = new StringBuilder(name);
+        str.append("%");
+        str.insert(0, "%");
+        name = str.toString();
+
+        try{
+            preparedStatement = conn.prepareStatement("SELECT * FROM customers WHERE firstname LIKE ? OR lastname LIKE ?");
+            preparedStatement.setString(1, name);
+            preparedStatement.setString(2, name);
+
+            result = preparedStatement.executeQuery();
+
+            while(result.next()){
+                customers.add(new Customer(result.getInt("id"),
+                        result.getString("firstname"),
+                        result.getString("lastname"),
+                        result.getString("CPR"),
+                        result.getString("address"),
+                        result.getString("postalcode"),
+                        result.getString("city"),
+                        result.getString("country"),
+                        result.getString("phone")));
+            }
+        }catch (SQLException ex){
+            System.out.println(ex.getSQLState());
+        }
+        return customers;
+    }
 }

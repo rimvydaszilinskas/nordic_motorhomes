@@ -44,7 +44,7 @@
                         <td th:text="${motorhouse.seats} + '/' + ${motorhouse.bed_count}"></td>
                         <td>
                             <button class="btn btn-secondary motorhouseDetails" th:id="'motorhouse_' + ${motorhouse.id}">Details</button>
-                            <a class="btn btn-success" th:href="'/reservation/reserve/' + ${motorhouse.id}" role="button">Reserve</a>
+                            <a class="btn btn-success" th:href="'/reservation/reserve/' + ${motorhouse.id} + '/' + ${dateFrom} + '/' + ${dateTo}" role="button">Reserve</a>
                         </td>
                     </tr>
                     </tbody>
