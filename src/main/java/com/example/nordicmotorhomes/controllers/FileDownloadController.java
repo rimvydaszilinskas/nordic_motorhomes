@@ -15,7 +15,6 @@ import java.nio.charset.Charset;
 public class FileDownloadController {
 
     private static final String FILENAME = "files/test.pdf";
-    private static final String EXTERNAL_FILEPATH = "C:/";
 
     @RequestMapping(value="/download/{type}", method= RequestMethod.GET)
     public void downloadFile(HttpServletResponse response, @PathVariable("type") String type) throws Exception{

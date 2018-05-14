@@ -1,16 +1,15 @@
 package com.example.nordicmotorhomes.controllers;
 
+import com.example.nordicmotorhomes.models.Customer;
 import com.example.nordicmotorhomes.models.MotorHouse;
 import com.example.nordicmotorhomes.models.Reservation;
-import com.example.nordicmotorhomes.repositories.CustomerRepository;
-import com.example.nordicmotorhomes.repositories.MotorHouseRepo;
-import com.example.nordicmotorhomes.repositories.ReservationRepository;
+import com.example.nordicmotorhomes.repositories.*;
 import com.example.nordicmotorhomes.utilities.JSON;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
+import java.time.temporal.ChronoUnit;
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -19,9 +18,9 @@ public class ReservationController {
     private static final String defaultPath = "/reservation";
     private static final String defaultFilePath = "reservations/";
 
-    private ReservationRepository reservationRepository = new ReservationRepository();
-    private MotorHouseRepo motorHouseRepo = new MotorHouseRepo();
-    private CustomerRepository customerRepository = new CustomerRepository();
+    private IReservation reservationRepository = new ReservationRepository();
+    private IMotorHouse motorHouseRepo = new MotorHouseRepo();
+    private IPerson<Customer> customerRepository = new PersonRepository();
 
     @GetMapping(defaultPath)
     public String index(Model model){
@@ -38,10 +37,22 @@ public class ReservationController {
                          Model model){
         //get free motorhouses
         List<MotorHouse> motorHouses = new MotorHouseRepo().getAllFreeMotorhouses(dateFrom, dateTo, Integer.parseInt(seats), Integer.parseInt(beds));
+        String[] hold = dateFrom.split("-");
+        LocalDate start = LocalDate.of(Integer.parseInt(hold[0]),
+                                        Integer.parseInt(hold[1]),
+                                        Integer.parseInt(hold[2]));
+        hold = dateTo.split("-");
+
+        LocalDate end = LocalDate.of(Integer.parseInt(hold[0]),
+                                        Integer.parseInt(hold[1]),
+                                        Integer.parseInt(hold[2]));
+
+        long days = ChronoUnit.DAYS.between(start, end);
 
         model.addAttribute("motorhouses", motorHouses);
         model.addAttribute("dateFrom", dateFrom);
         model.addAttribute("dateTo", dateTo);
+        model.addAttribute("days", days);
 
         return defaultFilePath + "/results";
     }
@@ -101,5 +112,11 @@ public class ReservationController {
             model.addAttribute("status", false);
 
         return defaultFilePath + "index";
+    }
+
+    @GetMapping(defaultPath + "/details/{id}")
+    public String details(@PathVariable("id")int id, Model model){
+        model.addAttribute("reservation", reservationRepository.get(id));
+        return defaultFilePath + "details";
     }
 }

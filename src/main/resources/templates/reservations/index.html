@@ -45,7 +45,6 @@
                                 <td th:text="${reservation.status}"></td>
                                 <td>
                                     <a class="btn btn-secondary" th:href="'/reservation/details/' + ${reservation.id}" role="button">Details</a>
-                                    <a class="btn btn-success" th:href="'/reservation/edit/' + ${reservation.id}" role="button">Edit</a>
                                     <button class="btn btn-danger delete" th:id="'delete_' + ${reservation.id}">Delete</button>
                                 </td>
                             </tr>

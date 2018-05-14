@@ -2,8 +2,8 @@ package com.example.nordicmotorhomes.controllers;
 
 import com.example.nordicmotorhomes.models.Customer;
 import com.example.nordicmotorhomes.models.Reservation;
-import com.example.nordicmotorhomes.repositories.CustomerRepository;
-import com.example.nordicmotorhomes.repositories.ICustomer;
+import com.example.nordicmotorhomes.repositories.PersonRepository;
+import com.example.nordicmotorhomes.repositories.IPerson;
 import com.example.nordicmotorhomes.repositories.ReservationRepository;
 import com.example.nordicmotorhomes.utilities.JSON;
 import org.springframework.stereotype.Controller;
@@ -14,7 +14,7 @@ import java.util.List;
 
 @Controller
 public class CustomerController {
-    private ICustomer customerRepository = new CustomerRepository();
+    private IPerson<Customer> customerRepository = new PersonRepository();
     private List<Customer> customers;
 
     private static final String defaultPath = "/customers";

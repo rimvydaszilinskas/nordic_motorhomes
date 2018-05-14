@@ -10,4 +10,9 @@ public class MainController {
     public String index(){
         return "index";
     }
+
+//    @GetMapping("/error")
+//    public String error(){
+//        return "";
+//    }
 }

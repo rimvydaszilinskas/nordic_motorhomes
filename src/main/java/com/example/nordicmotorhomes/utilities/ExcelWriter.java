@@ -23,14 +23,17 @@ public class ExcelWriter {
     private final int H = 7;
     private final int I = 8;
 
-    public void generateFinalBill(Customer customer){
+    public boolean generateFinalBill(Customer customer, Staff staff){
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet("Bill");
 
         createHeader(workbook, sheet, customer);
         createSquare(workbook, sheet);
+        createTermsAndConditions(workbook, sheet);
+        createSignatures(workbook, sheet, customer, staff);
+        populateSquare(workbook, sheet);
 
-        writeToFile(workbook, sheet, "");
+        return writeToFile(workbook, sheet, "");
     }
 
     private void createHeader(XSSFWorkbook workbook, XSSFSheet sheet, Customer customer){
@@ -249,7 +252,7 @@ public class ExcelWriter {
 
     }
 
-    private void writeToFile(XSSFWorkbook workbook, XSSFSheet sheet, String fileName){
+    private boolean writeToFile(XSSFWorkbook workbook, XSSFSheet sheet, String fileName){
 
         StringBuilder str = new StringBuilder();
         str.append("files/").append(fileName).append(".xlsx");
@@ -261,8 +264,12 @@ public class ExcelWriter {
             workbook.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            return false;
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
+
+        return true;
     }
 }

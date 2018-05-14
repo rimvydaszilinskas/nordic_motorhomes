@@ -13,12 +13,13 @@ public class MotorHouse {
     private int year;
     private int mileage;
     private String transmission;
+    private double price;
 
     public MotorHouse(){}
 
     public MotorHouse(int id, String manufacturer, String model, int bed_count,
                       int seats, int weight, String description, String gearbox,
-                      int year, int mileage, String transmission, int power) {
+                      int year, int mileage, String transmission, int power, double price) {
         this.id = id;
         this.manufacturer = manufacturer;
         this.model = model;
@@ -31,11 +32,12 @@ public class MotorHouse {
         this.mileage = mileage;
         this.transmission = transmission;
         this.power = power;
+        this.price = price;
     }
 
     public MotorHouse(String manufacturer, String model, int bed_count,
                       int seats, int weight, String description, String gearbox,
-                      int year, int mileage, String transmission, int power) {
+                      int year, int mileage, String transmission, int power, double price) {
         this.manufacturer = manufacturer;
         this.model = model;
         this.bed_count = bed_count;
@@ -47,6 +49,7 @@ public class MotorHouse {
         this.mileage = mileage;
         this.transmission = transmission;
         this.power = power;
+        this.price = price;
     }
 
     public int getId() {
@@ -143,5 +146,13 @@ public class MotorHouse {
 
     public void setPower(int power) {
         this.power = power;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 }

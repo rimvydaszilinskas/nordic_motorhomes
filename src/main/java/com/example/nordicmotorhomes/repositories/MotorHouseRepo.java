@@ -35,13 +35,14 @@ public class MotorHouseRepo implements IMotorHouse {
                 modelID = insertModel(motorHouse);
             }
 
-            preparedStatement = conn.prepareStatement("INSERT INTO motorhomes(model, gearbox, year, mileage, transmission, power) VALUES(?, ?, ?, ?, ?, ?)");
+            preparedStatement = conn.prepareStatement("INSERT INTO motorhomes(model, gearbox, year, mileage, transmission, power, price) VALUES(?, ?, ?, ?, ?, ?, ?)");
             preparedStatement.setInt(1, modelID);
             preparedStatement.setString(2, motorHouse.getGearbox());
             preparedStatement.setInt(3, motorHouse.getYear());
             preparedStatement.setInt(4, motorHouse.getMileage());
             preparedStatement.setString(5, motorHouse.getTransmission());
             preparedStatement.setInt(6, motorHouse.getPower());
+            preparedStatement.setDouble(7, motorHouse.getPrice());
 
             if(preparedStatement.executeUpdate() == 1){
                 return true;
@@ -100,7 +101,8 @@ public class MotorHouseRepo implements IMotorHouse {
                         result.getInt("year"),
                         result.getInt("mileage"),
                         result.getString("transmission"),
-                        result.getInt("power")));
+                        result.getInt("power"),
+                        result.getDouble("price")));
             }
 
             return motorHouses;
@@ -131,7 +133,8 @@ public class MotorHouseRepo implements IMotorHouse {
                         result.getInt("year"),
                         result.getInt("mileage"),
                         result.getString("transmission"),
-                        result.getInt("power")));
+                        result.getInt("power"),
+                        result.getDouble("price")));
             }
 
             return motorHouses;
@@ -202,7 +205,8 @@ public class MotorHouseRepo implements IMotorHouse {
                         result.getInt("year"),
                         result.getInt("mileage"),
                         result.getString("transmission"),
-                        result.getInt("power"));
+                        result.getInt("power"),
+                        result.getDouble("price"));
             }
         } catch (SQLException ex){
             ex.printStackTrace();
@@ -383,7 +387,8 @@ public class MotorHouseRepo implements IMotorHouse {
                         result.getInt("year"),
                         result.getInt("mileage"),
                         result.getString("transmission"),
-                        result.getInt("power")));
+                        result.getInt("power"),
+                        result.getDouble("price")));
             }
         } catch (SQLException ex){
             System.out.println("get all free" + ex.getSQLState());
@@ -453,7 +458,8 @@ public class MotorHouseRepo implements IMotorHouse {
                         result.getInt("year"),
                         result.getInt("mileage"),
                         result.getString("transmission"),
-                        result.getInt("power")));
+                        result.getInt("power"),
+                        result.getDouble("price")));
             }
 
             return motorHouses;
@@ -483,7 +489,8 @@ public class MotorHouseRepo implements IMotorHouse {
                         result.getInt("year"),
                         result.getInt("mileage"),
                         result.getString("transmission"),
-                        result.getInt("power")));
+                        result.getInt("power"),
+                        result.getDouble("price")));
             }
 
             return motorHouses;

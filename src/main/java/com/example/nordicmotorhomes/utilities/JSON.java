@@ -116,33 +116,6 @@ public class JSON implements IJSON{
         json.append("{");
     }
 
-//    @Override
-//    public JSON add(String key, ArrayList<String> values) {
-//        StringBuilder str = new StringBuilder();
-//        boolean first = true;
-//        if(length != 0)
-//            json.append(", ");
-//        length++;
-//        str.append("\"").append(key).append("\" : ");
-//        str.append("[");
-//        for (String value : values) {
-//            if(first != true) {
-//                str.append(", ");
-//            }
-//            first = false;
-//            if(value.charAt(0) == '"' && value.charAt(1) == '{'){
-//                value = new StringBuilder(value).deleteCharAt(0).deleteCharAt(value.length()-1).toString();
-//            }
-//            if(value.charAt(0) != '{')
-//                str.append("\"").append(value).append("\"");
-//            else
-//                str.append(value);
-//        }
-//        str.append("]");
-//        json.append(str.toString());
-//        return this;
-//    }
-
     @Override
     public JSON merge(JSON json) {
         StringBuilder str = new StringBuilder(json.getJSON());

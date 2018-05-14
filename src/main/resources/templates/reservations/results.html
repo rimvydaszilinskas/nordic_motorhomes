@@ -22,7 +22,7 @@
                                 <th scope="col">Name</th>
                                 <th scope="col">Year</th>
                                 <th scope="col">Gearbox</th>
-                                <th scope="col">Transmission</th>
+                                <th scope="col">Price</th>
                                 <th scope="col">Seats/Beds</th>
                                 <th scope="col"></th>
                             </tr>
@@ -33,7 +33,7 @@
                                 <td th:text="${motorhouse.manufacturer} + ' ' + ${motorhouse.model}"></td>
                                 <td th:text="${motorhouse.year}"></td>
                                 <td th:text="${motorhouse.gearbox}"></td>
-                                <td th:text="${motorhouse.transmission}"></td>
+                                <td th:text="${days} * ${motorhouse.price} + ' DKK'"></td>
                                 <td th:text="${motorhouse.seats} + '/' + ${motorhouse.bed_count}"></td>
                                 <td>
                                     <button class="btn btn-secondary motorhouseDetails" th:id="'motorhouse_' + ${motorhouse.id}">Details</button>

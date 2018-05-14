@@ -10,12 +10,12 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CustomerRepository implements ICustomer{
+public class PersonRepository implements IPerson<Customer> {
     private Connection conn;
     private PreparedStatement preparedStatement;
     private ResultSet result;
 
-    public CustomerRepository() {
+    public PersonRepository() {
         try {
             this.conn = Database.getConnection();
         } catch (SQLException e) {
