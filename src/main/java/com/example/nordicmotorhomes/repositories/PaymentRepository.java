@@ -32,7 +32,8 @@ public class PaymentRepository implements IPayment {
                 payments.add(new Payment(result.getInt("id"),
                                         result.getDouble("ammount"),
                                         result.getInt("reservation_id"),
-                                        result.getString("date")));
+                                        result.getString("date"),
+                        result.getString("description")));
             }
         } catch (SQLException ex){
             System.out.println(ex.getSQLState());
@@ -60,7 +61,8 @@ public class PaymentRepository implements IPayment {
                 payments.add(new Payment(result.getInt("id"),
                         result.getDouble("ammount"),
                         result.getInt("reservation_id"),
-                        result.getString("date")));
+                        result.getString("date"),
+                        result.getString("description")));
             }
         } catch (SQLException ex){
             System.out.println(ex.getSQLState());
@@ -79,7 +81,8 @@ public class PaymentRepository implements IPayment {
                 return new Payment(result.getInt("id"),
                         result.getDouble("ammount"),
                         result.getInt("reservation_id"),
-                        result.getString("date"));
+                        result.getString("date"),
+                        result.getString("description"));
             }
         } catch (SQLException ex){
             System.out.println(ex.getSQLState());
@@ -91,7 +94,7 @@ public class PaymentRepository implements IPayment {
     public List<Payment> getReservationPayments(int id) {
         List<Payment> payments = new LinkedList<>();
         try{
-            preparedStatement = conn.prepareStatement("SELECT * FROM payments WHERE reservation_id=?");
+            preparedStatement = conn.prepareStatement("SELECT * FROM payments WHERE reservation_id=? ORDER BY id DESC");
             preparedStatement.setInt(1, id);
 
             result = preparedStatement.executeQuery();
@@ -101,7 +104,8 @@ public class PaymentRepository implements IPayment {
                         result.getInt("id"),
                         result.getDouble("ammount"),
                         result.getInt("reservation_id"),
-                        result.getString("date")
+                        result.getString("date"),
+                        result.getString("description")
                 ));
             }
         }catch (SQLException ex){
@@ -113,11 +117,12 @@ public class PaymentRepository implements IPayment {
     @Override
     public boolean update(Payment payment) {
         try{
-            preparedStatement = conn.prepareStatement("UPDATE payments SET ammount=?, reservation_id=?, date=? WHERE id=?");
+            preparedStatement = conn.prepareStatement("UPDATE payments SET ammount=?, reservation_id=?, date=?, description=? WHERE id=?");
             preparedStatement.setDouble(1, payment.getAmmount());
             preparedStatement.setInt(2, payment.getReservation_id());
             preparedStatement.setString(3, payment.getDate().toString());
-            preparedStatement.setInt(4, payment.getId());
+            preparedStatement.setString(4, payment.getDescription());
+            preparedStatement.setInt(5, payment.getId());
 
             if(preparedStatement.executeUpdate() != 0){
                 return true;
@@ -131,10 +136,11 @@ public class PaymentRepository implements IPayment {
     @Override
     public boolean add(Payment payment) {
         try{
-            preparedStatement = conn.prepareStatement("INSERT INTO payments(ammount, reservation_id, date) VALUES(?, ?, ?)");
+            preparedStatement = conn.prepareStatement("INSERT INTO payments(ammount, reservation_id, date, description) VALUES(?, ?, ?, ?)");
             preparedStatement.setDouble(1, payment.getAmmount());
             preparedStatement.setInt(2, payment.getReservation_id());
             preparedStatement.setString(3, payment.getDate().toString());
+            preparedStatement.setString(4, payment.getDescription());
 
             if(preparedStatement.executeUpdate() != 0){
                 return true;

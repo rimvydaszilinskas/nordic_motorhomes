@@ -2,8 +2,10 @@ package com.example.nordicmotorhomes.controllers;
 
 import com.example.nordicmotorhomes.models.Customer;
 import com.example.nordicmotorhomes.models.MotorHouse;
+import com.example.nordicmotorhomes.models.Payment;
 import com.example.nordicmotorhomes.models.Reservation;
 import com.example.nordicmotorhomes.repositories.*;
+import com.example.nordicmotorhomes.utilities.DistanceCounter;
 import com.example.nordicmotorhomes.utilities.JSON;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -135,4 +137,31 @@ public class ReservationController {
         return defaultFilePath + "details";
     }
 
+    @PostMapping(defaultPath + "/pay")
+    public String registerPayment(@RequestParam("id")int id,
+                                  @RequestParam("ammount")String ammount,
+                                  @RequestParam("description")String description){
+
+        Payment payment = new Payment();
+        payment.setAmmount(Double.parseDouble(ammount));
+        payment.setReservation_id(id);
+        payment.setDescription(description);
+        payment.setDate(LocalDate.now());
+
+        paymentRepo.add(payment);
+
+        return "redirect:" + defaultPath + "/details/" + id;
+    }
+
+    @GetMapping(defaultPath + "/cancel/{id}")
+    public String cancellation(@PathVariable("id")int id){
+        reservationRepository.delete(id);
+        return "redirect:" + defaultPath;
+    }
+
+    @GetMapping(defaultPath + "/pickup/{id}")
+    public String pickUp(@PathVariable("id")int id){
+
+        return "";
+    }
 }

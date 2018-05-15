@@ -14,9 +14,13 @@
                 <p>
                     Date: <span th:text="${reservation.dateFrom} + ' - ' + ${reservation.dateTo}"></span><br/>
                     Customer: <a th:text="${reservation.customerName}" th:href="'/customers/details/' + ${reservation.customerID}"></a><br/>
+                    Motorhome: <a th:text="${reservation.motorhouseName}" th:href="'/motorhouse/details/' + ${reservation.motorhouseID}"></a><br/>
                     Est. ammount: <span th:text="${reservation.total}"></span> DKK. <br/>
-                    <span></span><br/>
+                    Status: <span th:text="${reservation.status}" th:style="${reservation.status.equals('finished')} ? 'color: green' : 'color: red'"></span><br/>
                 </p>
+                <button class="btn btn-success" id="registerPayment">Register payment</button>
+                <button class="btn btn-danger" id="cancelReservation">Cancel reservation</button>
+                <a class="btn btn-success" th:href="'/reservation/invoice/' + ${reservation.id} + '/final'" th:if="${reservation.status.equals('finished')}">Invoice</a>
             </div>
         </div>
         <div class="row" th:if="${payments}">
@@ -24,15 +28,21 @@
                 <h3>Payment history</h3>
                 <table class="table">
                     <thead>
-                    <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Ammount</th>
-                        <th scope="col">Date</th>
-                        <th scope="col"></th>
-                    </tr>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Ammount</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Description</th>
+                            <th scope="col"></th>
+                        </tr>
                     </thead>
                     <tbody>
-
+                        <tr th:each="payment : ${payments}">
+                            <td scope="col" th:text="${payment.id}"></td>
+                            <td th:text="${payment.ammount}"></td>
+                            <td th:text="${payment.date}"></td>
+                            <td th:text="${payment.description}"></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -46,9 +56,60 @@
 <footer th:include="sections/sections :: footer">
 
 </footer>
+
+<div class="modal fade" id="payment_modal" tabindex="-1" role="dialog" aria-labelledby="Details modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Register payment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/reservation/pay" method="POST">
+                <div class="modal-body">
+                    <input type="text" id="id" name="id" th:value="${reservation.id}" hidden>
+                    <div class="form-group">
+                        <label for="ammount">Ammount</label>
+                        <input class="form-control" type="number" id="ammount" name="ammount">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <input type="text" class="form-control" id="description" name="description">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Submit</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Dismiss</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="cancelation" tabindex="-1" role="dialog" aria-labelledby="Details modal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cancelation_title">Register payment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to cancel this reservation?
+            </div>
+            <div class="modal-footer">
+                <a type="submit" class="btn btn-danger" role="button" th:href="'/reservation/cancel/' + ${reservation.id}">Delete</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Dismiss</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="http://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
-<script src="display.js"></script>
+<script th:src="@{/payment.js}"></script>
 </body>
 </html>

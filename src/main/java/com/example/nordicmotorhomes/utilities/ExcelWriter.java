@@ -32,6 +32,7 @@ public class ExcelWriter {
         createTermsAndConditions(workbook, sheet);
         createSignatures(workbook, sheet, customer, staff);
         populateSquare(workbook, sheet);
+        footer(workbook, sheet);
 
         return writeToFile(workbook, sheet, "");
     }
@@ -250,6 +251,24 @@ public class ExcelWriter {
 
     private void populateSquare(XSSFWorkbook workbook, XSSFSheet sheet){
 
+    }
+
+    private void footer(XSSFWorkbook workbook, XSSFSheet sheet){
+        Row row = sheet.createRow(49);
+        Cell cell = row.createCell(E);
+
+        XSSFFont font = workbook.createFont();
+        font.setBold(true);
+        CellStyle style = workbook.createCellStyle();
+        style.setFont(font);
+        cell.setCellStyle(style);
+        cell.setCellValue("2018");
+
+        row = sheet.createRow(50);
+        cell = row.createCell(E);
+
+        cell.setCellStyle(style);
+        cell.setCellValue("Copenhagen");
     }
 
     private boolean writeToFile(XSSFWorkbook workbook, XSSFSheet sheet, String fileName){
