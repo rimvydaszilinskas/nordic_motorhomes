@@ -88,6 +88,29 @@ public class PaymentRepository implements IPayment {
     }
 
     @Override
+    public List<Payment> getReservationPayments(int id) {
+        List<Payment> payments = new LinkedList<>();
+        try{
+            preparedStatement = conn.prepareStatement("SELECT * FROM payments WHERE reservation_id=?");
+            preparedStatement.setInt(1, id);
+
+            result = preparedStatement.executeQuery();
+
+            while(result.next()){
+                payments.add(new Payment(
+                        result.getInt("id"),
+                        result.getDouble("ammount"),
+                        result.getInt("reservation_id"),
+                        result.getString("date")
+                ));
+            }
+        }catch (SQLException ex){
+            System.out.println(ex.getSQLState());
+        }
+        return payments;
+    }
+
+    @Override
     public boolean update(Payment payment) {
         try{
             preparedStatement = conn.prepareStatement("UPDATE payments SET ammount=?, reservation_id=?, date=? WHERE id=?");

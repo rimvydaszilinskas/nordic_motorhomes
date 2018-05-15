@@ -13,6 +13,7 @@ public class Reservation {
     private String customerName;
     private int motorhouseID;
     private String motorhouseName;
+    private double total;
 
     public Reservation(){}
 
@@ -20,7 +21,7 @@ public class Reservation {
         this.id = id;
     }
 
-    public Reservation(int id, LocalDate dateFrom, LocalDate dateTo, LocalDate bookingDate, String status, int customerID, String customerName, int motorhouseID, String motorhouseName) {
+    public Reservation(int id, LocalDate dateFrom, LocalDate dateTo, LocalDate bookingDate, String status, int customerID, String customerName, int motorhouseID, String motorhouseName, double total) {
         this.id = id;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
@@ -30,9 +31,10 @@ public class Reservation {
         this.customerName = customerName;
         this.motorhouseID = motorhouseID;
         this.motorhouseName = motorhouseName;
+        this.total = total;
     }
 
-    public Reservation(int id, String dateFrom, String dateTo, String bookingDate, String status, int customerID, String customerName, int motorhouseID, String motorhouseName) {
+    public Reservation(int id, String dateFrom, String dateTo, String bookingDate, String status, int customerID, String customerName, int motorhouseID, String motorhouseName, double total) {
         this.id = id;
         setDateFrom(dateFrom);
         setDateTo(dateTo);
@@ -42,9 +44,10 @@ public class Reservation {
         this.customerName = customerName;
         this.motorhouseID = motorhouseID;
         this.motorhouseName = motorhouseName;
+        this.total = total;
     }
 
-    public Reservation(LocalDate dateFrom, LocalDate dateTo, LocalDate bookingDate, String status, int customerID, String customerName, int motorhouseID, String motorhouseName) {
+    public Reservation(LocalDate dateFrom, LocalDate dateTo, LocalDate bookingDate, String status, int customerID, String customerName, int motorhouseID, String motorhouseName, double total) {
         this.id = id;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
@@ -54,6 +57,7 @@ public class Reservation {
         this.customerName = customerName;
         this.motorhouseID = motorhouseID;
         this.motorhouseName = motorhouseName;
+        this.total = total;
     }
 
     public int getId() {
@@ -141,5 +145,13 @@ public class Reservation {
 
     public void setMotorhouseName(String motorhouseName) {
         this.motorhouseName = motorhouseName;
+    }
+
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal(double total) {
+        this.total = total;
     }
 }

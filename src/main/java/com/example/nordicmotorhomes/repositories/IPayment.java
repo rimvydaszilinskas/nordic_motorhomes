@@ -8,6 +8,7 @@ public interface IPayment {
     List<Payment> getAll();
     List<Payment> getThisMonths();
     Payment get(int id);
+    List<Payment> getReservationPayments(int id);
     boolean update(Payment payment);
     boolean add(Payment payment);
     boolean delete(int id);

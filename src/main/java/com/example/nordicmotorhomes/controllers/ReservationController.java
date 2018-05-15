@@ -21,6 +21,7 @@ public class ReservationController {
     private IReservation reservationRepository = new ReservationRepository();
     private IMotorHouse motorHouseRepo = new MotorHouseRepo();
     private IPerson<Customer> customerRepository = new PersonRepository();
+    private IPayment paymentRepo = new PaymentRepository();
 
     @GetMapping(defaultPath)
     public String index(Model model){
@@ -98,6 +99,17 @@ public class ReservationController {
                                     @RequestParam("motorhouseID")String motorhouseID,
                                     @RequestParam("customer")String customerID,
                                     Model model){
+        String[] hold = dateFrom.split("-");
+        LocalDate start = LocalDate.of(Integer.parseInt(hold[0]),
+                Integer.parseInt(hold[1]),
+                Integer.parseInt(hold[2]));
+        hold = dateTo.split("-");
+
+        LocalDate end = LocalDate.of(Integer.parseInt(hold[0]),
+                Integer.parseInt(hold[1]),
+                Integer.parseInt(hold[2]));
+
+        long days = ChronoUnit.DAYS.between(start, end);
 
         Reservation reservation = new Reservation(0);
         reservation.setDateFrom(dateFrom);
@@ -105,18 +117,22 @@ public class ReservationController {
         reservation.setMotorhouseID(Integer.parseInt(motorhouseID));
         reservation.setCustomerID(Integer.parseInt(customerID));
         reservation.setStatus("booked");
+        reservation.setTotal(days * motorHouseRepo.get(Integer.parseInt(motorhouseID)).getPrice());
 
         if(reservationRepository.create(reservation))
             model.addAttribute("status", true);
         else
             model.addAttribute("status", false);
-
+        model.addAttribute("reservations", reservationRepository.getAll());
         return defaultFilePath + "index";
     }
 
     @GetMapping(defaultPath + "/details/{id}")
     public String details(@PathVariable("id")int id, Model model){
-        model.addAttribute("reservation", reservationRepository.get(id));
+        Reservation reservation = reservationRepository.get(id);
+        model.addAttribute("reservation", reservation);
+        model.addAttribute("payments", paymentRepo.getReservationPayments(id));
         return defaultFilePath + "details";
     }
+
 }

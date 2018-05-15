@@ -8,7 +8,39 @@
 </header>
 
 <main>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <p>
+                    Date: <span th:text="${reservation.dateFrom} + ' - ' + ${reservation.dateTo}"></span><br/>
+                    Customer: <a th:text="${reservation.customerName}" th:href="'/customers/details/' + ${reservation.customerID}"></a><br/>
+                    Est. ammount: <span th:text="${reservation.total}"></span> DKK. <br/>
+                    <span></span><br/>
+                </p>
+            </div>
+        </div>
+        <div class="row" th:if="${payments}">
+            <div class="col" th:if="${!payments.isEmpty()}">
+                <h3>Payment history</h3>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Ammount</th>
+                        <th scope="col">Date</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
 
+                    </tbody>
+                </table>
+            </div>
+            <div class="col" th:if="${payments.isEmpty()}">
+                <h3>No payment history</h3>
+            </div>
+        </div>
+    </div>
 </main>
 
 <footer th:include="sections/sections :: footer">

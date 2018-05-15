@@ -33,17 +33,17 @@ public class ReservationRepository implements IReservation {
             preparedStatement.setInt(1, id);
 
             result = preparedStatement.executeQuery();
-
             if(result.next()){
                 return new Reservation(result.getInt("id"),
                         result.getDate("date_from").toString(),
                         result.getDate("date_to").toString(),
-                        result.getDate("booking_date").toString(),
+                        result.getDate("date_booked").toString(),
                         result.getString("status"),
                         result.getInt("customer_id"),
                         result.getString("firstname") + " " + result.getString("lastname"),
                         result.getInt("motorhome_id"),
-                        result.getString("manufacturer") + " " + result.getString("model"));
+                        result.getString("manufacturer") + " " + result.getString("model"),
+                        result.getDouble("total"));
             }
         }catch (SQLException ex){
             System.out.println(ex.getSQLState());
@@ -70,7 +70,8 @@ public class ReservationRepository implements IReservation {
                         result.getInt("customer_id"),
                         result.getString("firstname") + " " + result.getString("lastname"),
                         result.getInt("motorhome_id"),
-                        result.getString("manufacturer") + " " + result.getString("model")));
+                        result.getString("manufacturer") + " " + result.getString("model"),
+                        result.getDouble("total")));
             }
         }catch (SQLException ex){
             System.out.println(ex.getSQLState());
@@ -100,7 +101,8 @@ public class ReservationRepository implements IReservation {
                         result.getInt("customer_id"),
                         result.getString("firstname") + " " + result.getString("lastname"),
                         result.getInt("motorhome_id"),
-                        result.getString("manufacturer") + " " + result.getString("model")));
+                        result.getString("manufacturer") + " " + result.getString("model"),
+                        result.getDouble("total")));
             }
         }catch (SQLException ex){
             System.out.println(ex.getSQLState());
@@ -128,7 +130,8 @@ public class ReservationRepository implements IReservation {
                         result.getInt("customer_id"),
                         result.getString("firstname") + " " + result.getString("lastname"),
                         result.getInt("motorhome_id"),
-                        result.getString("manufacturer") + " " + result.getString("model")));
+                        result.getString("manufacturer") + " " + result.getString("model"),
+                        result.getDouble("total")));
             }
         }catch (SQLException ex){
             System.out.println(ex.getSQLState());
@@ -173,7 +176,8 @@ public class ReservationRepository implements IReservation {
                         result.getInt("customer_id"),
                         result.getString("firstname") + " " + result.getString("lastname"),
                         result.getInt("motorhome_id"),
-                        result.getString("manufacturer") + " " + result.getString("model")));
+                        result.getString("manufacturer") + " " + result.getString("model"),
+                        result.getDouble("total")));
             }
         }catch (SQLException ex){
             System.out.println(ex.getSQLState());
@@ -184,14 +188,15 @@ public class ReservationRepository implements IReservation {
     @Override
     public boolean update(Reservation reservation) {
         try{
-            preparedStatement = conn.prepareStatement("UPDATE reservations SET date_from=?, date_to=?, motorhome_id=?, customer_id=?, status=?, date_booked=? WHERE id=?");
+            preparedStatement = conn.prepareStatement("UPDATE reservations SET date_from=?, date_to=?, motorhome_id=?, customer_id=?, status=?, date_booked=?, total=? WHERE id=?");
             preparedStatement.setString(1, reservation.getDateFrom().toString());
             preparedStatement.setString(2, reservation.getDateTo().toString());
             preparedStatement.setInt(3, reservation.getMotorhouseID());
             preparedStatement.setInt(4, reservation.getCustomerID());
             preparedStatement.setString(5, reservation.getStatus());
             preparedStatement.setString(6, reservation.getBookingDate().toString());
-            preparedStatement.setInt(7, reservation.getId());
+            preparedStatement.setDouble(7, reservation.getTotal());
+            preparedStatement.setInt(8, reservation.getId());
 
             if(preparedStatement.executeUpdate() != 0)
                 return true;
@@ -218,7 +223,7 @@ public class ReservationRepository implements IReservation {
     @Override
     public boolean create(Reservation reservation) {
         try {
-            preparedStatement = conn.prepareStatement("INSERT INTO reservations(date_from, date_to, motorhome_id, customer_id, status, date_booked) VALUES (?, ?, ?, ?, ?, ?)");
+            preparedStatement = conn.prepareStatement("INSERT INTO reservations(date_from, date_to, motorhome_id, customer_id, status, date_booked, total) VALUES (?, ?, ?, ?, ?, ?, ?)");
 
             preparedStatement.setDate(1, java.sql.Date.valueOf(reservation.getDateFrom()));
             preparedStatement.setDate(2, java.sql.Date.valueOf(reservation.getDateTo()));
@@ -226,6 +231,7 @@ public class ReservationRepository implements IReservation {
             preparedStatement.setInt(4, reservation.getCustomerID());
             preparedStatement.setString(5, reservation.getStatus());
             preparedStatement.setDate(6, java.sql.Date.valueOf(LocalDate.now().toString()));
+            preparedStatement.setDouble(7, reservation.getTotal());
 
             if(preparedStatement.executeUpdate() != 0){
                 return true;
