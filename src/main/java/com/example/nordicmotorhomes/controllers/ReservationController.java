@@ -28,7 +28,7 @@ public class ReservationController {
     @GetMapping(defaultPath)
     public String index(Model model){
         model.addAttribute("reservations", reservationRepository.getAll());
-
+        model.addAttribute("today", LocalDate.now());
         return defaultFilePath + "index";
     }
 
@@ -155,7 +155,9 @@ public class ReservationController {
 
     @GetMapping(defaultPath + "/cancel/{id}")
     public String cancellation(@PathVariable("id")int id){
-        reservationRepository.delete(id);
+        Reservation reservation = reservationRepository.get(id);
+        reservation.setStatus("cancelled");
+        reservationRepository.update(reservation);
         return "redirect:" + defaultPath;
     }
 
