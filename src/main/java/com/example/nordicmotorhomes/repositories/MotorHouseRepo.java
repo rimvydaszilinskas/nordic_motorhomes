@@ -3,6 +3,7 @@ package com.example.nordicmotorhomes.repositories;
 import com.example.nordicmotorhomes.models.MotorHouse;
 import com.example.nordicmotorhomes.models.Transmission;
 import com.example.nordicmotorhomes.repositories.util.Database;
+import com.example.nordicmotorhomes.utilities.PriceCalculator;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -388,7 +389,7 @@ public class MotorHouseRepo implements IMotorHouse {
                         result.getInt("mileage"),
                         result.getString("transmission"),
                         result.getInt("power"),
-                        result.getDouble("price")));
+                        PriceCalculator.GetPrice(result.getDouble("price"))));
             }
         } catch (SQLException ex){
             System.out.println("get all free" + ex.getSQLState());

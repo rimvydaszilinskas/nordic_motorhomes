@@ -5,6 +5,7 @@ import com.example.nordicmotorhomes.models.Reservation;
 import com.example.nordicmotorhomes.repositories.PersonRepository;
 import com.example.nordicmotorhomes.repositories.IPerson;
 import com.example.nordicmotorhomes.repositories.ReservationRepository;
+import com.example.nordicmotorhomes.utilities.ExcelWriter;
 import com.example.nordicmotorhomes.utilities.JSON;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +25,7 @@ public class CustomerController {
     public String index(Model model){
         customers = customerRepository.getAll();
         model.addAttribute("customers", customers);
+        ExcelWriter writer = new ExcelWriter();
         return defaultFilePath + "index";
     }
 

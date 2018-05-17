@@ -16,20 +16,21 @@ public class DistanceCounter {
         return distanceCounter;
     }
 
-    public static int getDistance(String origin, String destination){
-        int distance = 0;
+    public static double getDistance(String destination){
+        double distance = 0;
         GeoApiContext context = new GeoApiContext.Builder()
                 .apiKey(API_KEY)
                 .build();
         try{
             DistanceMatrixApiRequest request = DistanceMatrixApi.newRequest(context);
-            DistanceMatrix matrix = request.origins(origin)
+            DistanceMatrix matrix = request.origins("Lygten 16, Copenhagen, Denmark")
                     .destinations(destination)
                     .mode(TravelMode.DRIVING)
                     .await();
-
-            String[] split = matrix.rows[0].elements[0].distance.toString().split(" ");
-            distance = Integer.parseInt(split[0]);
+            if(matrix.rows[0].elements[0].distance != null){
+                String[] split = matrix.rows[0].elements[0].distance.toString().split(" ");
+                distance = Double.parseDouble(split[0]);
+            }
 
         } catch (Exception ex){
             ex.printStackTrace();
