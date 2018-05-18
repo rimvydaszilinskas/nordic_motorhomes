@@ -21,7 +21,13 @@
                 </p>
                 <button class="btn btn-success" id="registerPayment">Register payment</button>
                 <button class="btn btn-danger" id="cancelReservation">Cancel reservation</button>
-                <a class="btn btn-success" th:href="'/reservation/invoice/' + ${reservation.id} + '/final'" th:if="${reservation.status.equals('finished')}">Invoice</a>
+                <!--<a class="btn btn-success" th:href="'/reservation/invoice/' + ${reservation.id} + '/final'" th:if="${reservation.status.equals('finished')}">Invoice</a>-->
+            </div>
+            <div class="row" th:if="${extras}">
+                <p>
+                    Extras ordered:<br/>
+                    <span th:each="extra : ${extras}"><span th:text="${extra.name} + ' ' + ${extra.price} + ' EUR.'"></span><br/></span>
+                </p>
             </div>
         </div>
         <div class="row" th:if="${payments}">
@@ -46,7 +52,7 @@
                         </tr>
                     </tbody>
                 </table>
-                <a class="btn btn-success" role="button" th:href="/">Invoice</a>
+                <a class="btn btn-success" role="button" th:href="'/bills/' + ${reservation.id} + '/final'">Invoice</a>
             </div>
             <div class="col" th:if="${payments.isEmpty()}">
                 <h3>No payment history</h3>

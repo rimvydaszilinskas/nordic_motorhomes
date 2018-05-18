@@ -42,6 +42,16 @@
                                 </span>
                             </select>
                         </div>
+                        <div class="form-group" th:if="${extras}">
+                            <label for="extras">Extras</label>
+                            <select class="custom-select form-control" id="extras" name="extras" multiple>
+                                <option value="default" selected>NONE</option>
+                                <option th:each="extra : ${extras}" th:value="${extra.id}" th:text="${extra.name} + ' (' + ${extra.price} + ' EUR.)'"></option>
+                            </select>
+                            <small id="passwordHelpBlock" class="form-text text-muted">
+                                Select more than one while holding CTRL and right clicking the choice.
+                            </small>
+                        </div>
                         <button type="submit" class="btn btn-success">Submit</button>
                         <!--<a type="btn btn-success" th:href="'customers/create/' + ${dateFrom} + '/' + ${dateTo} + '/' + ${motorhouse.id}">Create new customer</a>-->
                     </form>

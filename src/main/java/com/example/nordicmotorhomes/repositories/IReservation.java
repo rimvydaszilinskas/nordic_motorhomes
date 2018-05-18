@@ -16,5 +16,6 @@ public interface IReservation {
     boolean update(Reservation reservation);
     boolean delete(int id);
     boolean create(Reservation reservation);
+    int createGetID(Reservation reservation);
     boolean setTaken(int id);
 }

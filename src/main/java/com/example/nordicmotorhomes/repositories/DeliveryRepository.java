@@ -19,7 +19,7 @@ public class DeliveryRepository implements IDelivery {
         try{
             conn = Database.getConnection();
         } catch (SQLException ex){
-            System.out.println(ex.getSQLState());
+            System.out.println("here" + ex.getSQLState());
         }
     }
 
@@ -37,7 +37,7 @@ public class DeliveryRepository implements IDelivery {
                         result.getDouble("distance")));
             }
         }catch (SQLException ex){
-            System.out.println(ex.getSQLState());
+            System.out.println("here " + ex.getSQLState());
         }
         return deliveries;
     }

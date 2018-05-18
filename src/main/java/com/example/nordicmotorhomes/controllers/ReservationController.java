@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
 import java.time.LocalDate;
+import java.util.LinkedList;
 import java.util.List;
 
 @Controller
@@ -25,6 +26,7 @@ public class ReservationController {
     private IPerson<Customer> customerRepository = new PersonRepository();
     private IPayment paymentRepo = new PaymentRepository();
     private IExtras extraRepo = new ExtrasRepository();
+    private IPickupDropoff pickupRepo = new PickupDropOffRepository();
 
     @GetMapping(defaultPath)
     public String index(Model model){
@@ -95,6 +97,7 @@ public class ReservationController {
         model.addAttribute("dateTo", dateTo);
         model.addAttribute("motorhouse", motorHouse);
         model.addAttribute("customers", customerRepository.getAll());
+        model.addAttribute("extras", extraRepo.getAll());
         return defaultFilePath + "create";
     }
 
@@ -103,6 +106,7 @@ public class ReservationController {
                                     @RequestParam("dateTo")String dateTo,
                                     @RequestParam("motorhouseID")String motorhouseID,
                                     @RequestParam("customer")String customerID,
+                                    @RequestParam("extras")String extras,
                                     Model model){
         String[] hold = dateFrom.split("-");
         LocalDate start = LocalDate.of(Integer.parseInt(hold[0]),
@@ -116,18 +120,33 @@ public class ReservationController {
 
         long days = ChronoUnit.DAYS.between(start, end);
 
+        List<Integer> ids = new LinkedList<>();
+        if(!extras.equals("default")){
+            String[] split = extras.split(",");
+
+            for(String extraID : split){
+                ids.add(Integer.parseInt(extraID));
+            }
+        }
+
         Reservation reservation = new Reservation(0);
         reservation.setDateFrom(dateFrom);
         reservation.setDateTo(dateTo);
         reservation.setMotorhouseID(Integer.parseInt(motorhouseID));
         reservation.setCustomerID(Integer.parseInt(customerID));
         reservation.setStatus("booked");
-        reservation.setTotal(days * PriceCalculator.GetPrice(motorHouseRepo.get(Integer.parseInt(motorhouseID)).getPrice()));
-
-        if(reservationRepository.create(reservation))
+        reservation.setTotal(days * PriceCalculator.GetPrice(motorHouseRepo.get(Integer.parseInt(motorhouseID)).getPrice()) + extraRepo.inRangeTotal(ids));
+        System.out.println("total: " + extraRepo.inRangeTotal(ids));
+        int id = reservationRepository.createGetID(reservation);
+        if(id != 0)
             model.addAttribute("status", true);
         else
             model.addAttribute("status", false);
+
+        if(!extras.equals("default")){
+            extraRepo.createReservationExtras(id, ids);
+        }
+
         model.addAttribute("reservations", reservationRepository.getAll());
         model.addAttribute("today", LocalDate.now());
         return defaultFilePath + "index";
@@ -143,6 +162,7 @@ public class ReservationController {
         }
         model.addAttribute("reservation", reservation);
         model.addAttribute("payments", payments);
+        model.addAttribute("extras", extraRepo.getReservation(id));
         model.addAttribute("paid", paid);
         return defaultFilePath + "details";
     }
@@ -196,6 +216,7 @@ public class ReservationController {
         model.addAttribute("locationText", "Are you sure you want to confirm pickup at " +
                 address.toUpperCase() + ", " + city.toUpperCase() + ", " + country.toUpperCase() + " for extra " + decimalFormat.format(price) + "?");
         model.addAttribute("extraPrice", price);
+        model.addAttribute("extraDistance", distance);
         model.addAttribute("id", id);
 
         return defaultFilePath + "pickupConfirm";
@@ -211,16 +232,97 @@ public class ReservationController {
     @PostMapping(defaultPath + "/pickup/confirm")
     public String confirmPickup(@RequestParam("id")int id){
         reservationRepository.setTaken(id);
+        pickupRepo.create(new Pickup(LocalDate.now(), 1, id, motorHouseRepo.getReservation(id).getMileage()));
         return "redirect:" + defaultPath;
     }
 
     @PostMapping(defaultPath + "/pickup/confirmaddress")
-    public String confirmPickup(@RequestParam("id")int id, @RequestParam("extra")String extra){
+    public String confirmPickup(@RequestParam("id")int id, @RequestParam("extra")String extra, @RequestParam("extraDistance")double distance){
         double extraPrice = Double.parseDouble(extra);
         Reservation reservation = reservationRepository.get(id);
         reservation.setTotal(reservation.getTotal() + extraPrice);
         reservation.setStatus("taken");
         reservationRepository.update(reservation);
+        pickupRepo.create(new Pickup(LocalDate.now(),
+                1,
+                id,
+                motorHouseRepo.getReservation(id).getMileage() + (int) distance));
+
         return "redirect:" + defaultPath;
+    }
+
+    @GetMapping(defaultPath + "/dropoff/skip/{id}")
+    public String dropOffDetails(@PathVariable("id")int id, Model model){
+        //navigate to enter the km
+        model.addAttribute("id", id);
+        return "";
+    }
+
+    @PostMapping(defaultPath + "/dropoff/location")
+    public String dropOffDetails(@RequestParam("id")int id,
+                                 @RequestParam("address")String address,
+                                 @RequestParam("city")String city,
+                                 @RequestParam("country")String country,
+                                 Model model){
+        String fullAdress = new StringBuilder(address)
+                .append(", ")
+                .append(city)
+                .append(",")
+                .append(country)
+                .toString();
+        double distance = DistanceCounter.getDistance(fullAdress);
+        double price = distance * 0.7;
+        DecimalFormat decimalFormat = new DecimalFormat(".##");
+
+        model.addAttribute("distanceMsg", "Are you sure you want to drop off the vehicle at " + fullAdress.toUpperCase() + " for extra " + decimalFormat.format(price) + " EUR.?");
+        model.addAttribute("extraDistance", distance);
+        model.addAttribute("id", id);
+        return "";
+    }
+
+    @PostMapping(defaultPath + "/dropoff/confirm")
+    public String dropOffConfirm(@RequestParam("id")int id,
+                                 @RequestParam("extraDistance")String extraDistance,
+                                 @RequestParam("fuel")String fuelLevel,
+                                 @RequestParam("mileage")int mileage){
+        double fuel = Double.parseDouble(fuelLevel);
+
+        MotorHouse motorHouse = motorHouseRepo.getReservation(id);
+        if(!extraDistance.equals("")) {
+            int distance = Integer.parseInt(extraDistance);
+            motorHouse.setMileage(mileage + distance);
+        } else {
+            motorHouse.setMileage(mileage);
+        }
+        motorHouseRepo.update(motorHouse);
+
+        Reservation reservation = reservationRepository.get(id);
+        if(1 - fuel < 0.5){
+            reservation.setTotal(reservation.getTotal() + 70);
+        }
+
+        Pickup pickup = pickupRepo.getReservationPickups(id).get(1);
+        int km_start = pickup.getMileage();
+        long days = ChronoUnit.DAYS.between(reservation.getDateFrom(), reservation.getDateTo());
+
+        //check the average km/day
+        if((mileage - km_start) / days > 400){
+            double difference = mileage - km_start - (days * 400);
+            reservation.setTotal(reservation.getTotal() + (int) difference);
+        }
+
+        List<Payment> payments = paymentRepo.getReservationPayments(id);
+
+        double paid = 0;
+        for(Payment payment : payments){
+            paid += payment.getAmmount();
+        }
+
+        if(paid >= reservation.getTotal()){
+            reservation.setStatus("finished");
+        } else {
+            reservation.setStatus("pending");
+        }
+        return "";
     }
 }

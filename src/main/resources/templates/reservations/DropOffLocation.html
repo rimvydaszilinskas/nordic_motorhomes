@@ -16,11 +16,11 @@
                     Could not find the address!
                 </div>
             </div>
-
         </div>
+
         <div class="row">
             <div class="col-md-8 offset-md-2">
-                <form method="post" action="/reservation/pickup/location">
+                <form method="post" action="/reservation/dropoff/location">
                     <input type="number" th:value="${id}" id="id" name="id" hidden>
                     <div class="form-group">
                         <label for="address">Address</label>
@@ -34,7 +34,7 @@
                         <label for="country">Country</label>
                         <input type="text" id="country" name="country" class="form-control">
                     </div>
-                    <a class="btn btn-secondary" role="button" th:href="'/reservation/pickup/skip/' + ${id}">Picking at the office</a>
+                    <a class="btn btn-secondary" role="button" th:href="'/reservation/dropoff/skip/' + ${id}">Dropping off at the office</a>
                     <button type="submit" class="btn btn-success">Submit</button>
                 </form>
             </div>

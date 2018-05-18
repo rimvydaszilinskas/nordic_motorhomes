@@ -36,8 +36,10 @@ public class ExcelWriter {
         createHeader(workbook, sheet, customer, reservation.getId());
         createTermsAndConditions(workbook, sheet);
         createSignatures(workbook, sheet, customer);
-        int length = populateSquare(workbook, sheet, payments, extras, reservation, motorHouse, deliveries);
-        createSquare(workbook, sheet, length);
+
+        populateSquare(workbook, sheet, payments, extras, reservation, motorHouse, deliveries);
+        createSquare(workbook, sheet, 17);
+
         footer(workbook, sheet);
 
         return writeToFile(workbook, filename);
@@ -322,7 +324,7 @@ public class ExcelWriter {
             cell.setCellValue(km * 0.7);
         }
 
-        if(extras.size() + rows < MaxRows){
+        if(extras.size() + rows < MaxRows ){
             row = sheet.createRow(StartRow + rows);
             rows++;
             cell = row.createCell(C);
@@ -350,12 +352,12 @@ public class ExcelWriter {
         row = sheet.createRow(StartRow + rows);
         row.createCell(G).setCellValue(reservation.getTotal());
 
-        row = sheet.createRow(32);
-        row.createCell(B).setCellValue("Paid: ");
-        cell = row.createCell(C);
+        row = sheet.createRow(30);
+        row.createCell(D).setCellValue("Paid: ");
+        cell = row.createCell(E);
         cell.setCellStyle(boldStyle);
         cell.setCellValue(paid);
-        row.createCell(D).setCellValue("EUR.");
+        row.createCell(F).setCellValue("EUR.");
 
         return rows;
     }

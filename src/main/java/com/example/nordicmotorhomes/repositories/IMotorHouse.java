@@ -17,6 +17,7 @@ public interface IMotorHouse {
     List<MotorHouse> getAllOnFilters(String manufacturer, String gearbox, String transmission, int price);
     List<MotorHouse> getAllFreeMotorhouses(String from, String to, int seats, int beds);
     MotorHouse get(int id);
+    MotorHouse getReservation(int id);
     List<String> getAllManufacturers();
     List<Transmission> getAllTransmissions();
     List<String> getAllGearboxes();

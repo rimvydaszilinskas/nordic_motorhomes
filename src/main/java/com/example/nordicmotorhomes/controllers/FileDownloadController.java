@@ -27,26 +27,28 @@ public class FileDownloadController {
     private IPayment paymentRepository = new PaymentRepository();
     private IMotorHouse motorHouseRepository = new MotorHouseRepo();
 
-    @GetMapping("/bills/{type}/{id}")
+    @GetMapping("/bills/{id}/{type}")
     public void downloadFile(@PathVariable("type")String type,
-            @PathVariable("reservationID")int id,
+            @PathVariable("id")int id,
             HttpServletResponse response) throws Exception{
+        //create the file
+        ExcelWriter writer = new ExcelWriter();
+        //get the required data
+        Reservation reservation = reservationRepository.get(id);
+        Customer customer =  customerRepository.get(reservation.getCustomerID());
+        List<Extra> extras = extrasRepository.getReservation(id);
+        List<Payment> payments = paymentRepository.getReservationPayments(id);
+        MotorHouse motorHouse = motorHouseRepository.get(reservation.getMotorhouseID());
+        motorHouse.setPrice(PriceCalculator.GetPrice(motorHouse.getPrice()));
+        //create file
+        writer.generateFinalBill(customer, reservation, payments, extras, motorHouse, buildRawFilename(id, type), new LinkedList<>());
+
         String filename = buildFilename(id, type);
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        File file = new File(classLoader.getResource(filename).getFile());
+        File file = new File(classLoader.getResource(filename).getPath());
 
         if(!file.exists()){
-            //if file not exists create file
-            ExcelWriter writer = new ExcelWriter();
-            //get the required data
-            Reservation reservation = reservationRepository.get(id);
-            Customer customer = customerRepository.get(reservation.getCustomerID());
-            List<Extra> extras = extrasRepository.getReservation(id);
-            List<Payment> payments = paymentRepository.getReservationPayments(id);
-            MotorHouse motorHouse = motorHouseRepository.get(reservation.getMotorhouseID());
-            motorHouse.setPrice(PriceCalculator.GetPrice(motorHouse.getPrice()));
-            //create file
-            writer.generateFinalBill(customer, reservation, payments, extras, motorHouse, buildRawFilename(id, type), new LinkedList<>());
+
         }
 
         //get file
@@ -61,8 +63,6 @@ public class FileDownloadController {
         InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
 
         FileCopyUtils.copy(inputStream, response.getOutputStream());
-
-        file.delete();
     }
 
     private String buildFilename(int id, String type){
@@ -71,6 +71,7 @@ public class FileDownloadController {
         str.append(buildRawFilename(id, type));
 
         str.append(EXTENSION);
+
         return str.toString();
     }
 

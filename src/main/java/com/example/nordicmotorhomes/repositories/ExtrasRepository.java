@@ -31,7 +31,7 @@ public class ExtrasRepository implements IExtras {
             result = preparedStatement.executeQuery();
 
             while(result.next()){
-                extras.add(new Extra(result.getInt("id"), result.getString("name"), result.getFloat("price")));
+                extras.add(new Extra(result.getInt("id"), result.getString("label"), result.getFloat("price")));
             }
         } catch (SQLException ex){
             System.out.println(ex.getSQLState());
@@ -47,7 +47,7 @@ public class ExtrasRepository implements IExtras {
 
             result = preparedStatement.executeQuery();
             if(result.next()){
-                return new Extra(result.getInt("id"), result.getString("name"), result.getFloat("price"));
+                return new Extra(result.getInt("id"), result.getString("label"), result.getFloat("price"));
             }
         } catch(SQLException ex){
             System.out.println(ex.getSQLState());
@@ -59,20 +59,52 @@ public class ExtrasRepository implements IExtras {
     public List<Extra> getReservation(int reservationID){
         List<Extra> extras = new LinkedList<>();
         try{
-            preparedStatement = conn.prepareStatement("SELECT * FROM reservationextras WHERE reservation_id=?");
+            preparedStatement = conn.prepareStatement("SELECT extras.* FROM extras INNER JOIN reservationextras " +
+                    "ON extras.id=reservationextras.extra_id WHERE reservationextras.reservation_id=?");
             preparedStatement.setInt(1, reservationID);
 
             result = preparedStatement.executeQuery();
 
-            List<Integer> ids = new LinkedList<>();
             while(result.next()){
-                ids.add(result.getInt("extra_id"));
+                extras.add(new Extra(result.getString("extras.label"), result.getFloat("extras.price")));
             }
-            extras = getInRange(ids);
+            //extras = getInRange(ids);
         } catch (SQLException ex){
             System.out.println(ex.getSQLState());
         }
         return extras;
+    }
+
+    @Override
+    public double inRangeTotal(List<Integer> ids) {
+        double total = 0;
+        try{
+            StringBuilder str = new StringBuilder("SELECT price FROM extras WHERE id in(");
+            for(int i = 0; i < ids.size(); i++){
+                if(i != 0){
+                    str.append(", ");
+                }
+                str.append("?");
+            }
+
+            str.append(")");
+
+            preparedStatement = conn.prepareStatement(str.toString());
+
+            for(int i=0; i < ids.size(); i++){
+                preparedStatement.setInt(i+1, ids.get(i));
+            }
+
+            result = preparedStatement.executeQuery();
+
+            while(result.next()){
+                total += result.getDouble("price");
+            }
+            return total;
+        } catch (SQLException ex){
+            System.out.println(ex.getSQLState());
+        }
+        return -1;
     }
 
     @Override
@@ -96,7 +128,7 @@ public class ExtrasRepository implements IExtras {
     @Override
     public boolean create(Extra extra) {
         try{
-            preparedStatement = conn.prepareStatement("INSERT INTO extras(name, price) VALUES(?, ?)");
+            preparedStatement = conn.prepareStatement("INSERT INTO extras(label, price) VALUES(?, ?)");
             preparedStatement.setString(1, extra.getName());
             preparedStatement.setFloat(2, extra.getPrice());
 
@@ -124,6 +156,36 @@ public class ExtrasRepository implements IExtras {
         return false;
     }
 
+    @Override
+    public boolean createReservationExtras(int reservationID, List<Integer> extraIDs) {
+        try{
+            String sql = "INSERT INTO reservationextras(extra_id, reservation_id) VALUES";
+            StringBuilder sqlBuilder = new StringBuilder(sql);
+
+            for(int i = 0; i < extraIDs.size(); i++){
+                if(i!= 0)
+                    sqlBuilder.append(",");
+                sqlBuilder.append("(?, ?)");
+            }
+
+
+            preparedStatement = conn.prepareStatement(sqlBuilder.toString());
+
+            for(int i = 0; i < extraIDs.size(); i++){
+                preparedStatement.setInt(2*i+1, extraIDs.get(i));
+                preparedStatement.setInt(2*i+2, reservationID);
+            }
+
+            if(preparedStatement.executeUpdate() > 0){
+                return true;
+            }
+
+        }catch (SQLException ex){
+            System.out.println(ex.getSQLState());
+        }
+        return false;
+    }
+
     private List<Extra> getInRange(List<Integer> ids) throws SQLException{
         List<Extra> extras = new LinkedList<>();
         StringBuilder stringBuilder = new StringBuilder();
@@ -145,7 +207,7 @@ public class ExtrasRepository implements IExtras {
         result = preparedStatement.executeQuery();
 
         while(result.next()){
-            extras.add(new Extra(result.getInt("id"), result.getString("name"), result.getFloat("price")));
+            extras.add(new Extra(result.getInt("id"), result.getString("label"), result.getFloat("price")));
         }
 
         return extras;

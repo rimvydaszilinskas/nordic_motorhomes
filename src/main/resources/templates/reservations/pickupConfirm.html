@@ -15,6 +15,7 @@
             <form method="post" th:action="${extraPrice} ? '/reservation/pickup/confirmaddress' : '/reservation/pickup/confirm'">
                 <input type="number" id="id" name="id" th:value="${id}" hidden>
                 <input type="text" id="extra" name="extra" th:if="${extraPrice}" th:value="${extraPrice}" hidden>
+                <input type="text" id="extraDistance" name="extraDistance" th:if="${extraDistance}" th:value="${extraDistance}" hidden>
                 <button type="submit" class="btn btn-success">Confirm</button>
                 <a class="btn btn-success" role="button" href="">Cancel</a>
             </form>

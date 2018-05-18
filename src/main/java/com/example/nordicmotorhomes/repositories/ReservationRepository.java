@@ -243,6 +243,22 @@ public class ReservationRepository implements IReservation {
     }
 
     @Override
+    public int createGetID(Reservation reservation) {
+        create(reservation);
+        try{
+            preparedStatement = conn.prepareStatement("SELECT MAX(id) AS id FROM reservations");
+            result = preparedStatement.executeQuery();
+
+            if(result.next()){
+                return result.getInt("id");
+            }
+        } catch (SQLException ex){
+            System.out.println("this error:" + ex.getSQLState());
+        }
+        return 0;
+    }
+
+    @Override
     public boolean setTaken(int id){
         try{
             preparedStatement = conn.prepareStatement("UPDATE reservations SET status='taken' WHERE id=?");

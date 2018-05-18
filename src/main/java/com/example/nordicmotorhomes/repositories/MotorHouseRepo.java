@@ -398,6 +398,38 @@ public class MotorHouseRepo implements IMotorHouse {
         return motorHouses;
     }
 
+    @Override
+    public MotorHouse getReservation(int id) {
+        try{
+            preparedStatement = conn.prepareStatement("SELECT models.*, motorhomes.* FROM motorhomes " +
+                    "INNER JOIN models ON models.id=motorhomes.model " +
+                    "INNER JOIN reservations ON reservations.motorhome_id=motorhomes.id " +
+                    "WHERE reservations.id=?");
+            preparedStatement.setInt(1, id);
+
+            result = preparedStatement.executeQuery();
+
+            if(result.next()){
+                return new MotorHouse(result.getInt("id"),
+                        result.getString("manufacturer"),
+                        result.getString("model"),
+                        result.getInt("bed_count"),
+                        result.getInt("seats"),
+                        result.getInt("weight"),
+                        result.getString("description"),
+                        result.getString("gearbox"),
+                        result.getInt("year"),
+                        result.getInt("mileage"),
+                        result.getString("transmission"),
+                        result.getInt("power"),
+                        PriceCalculator.GetPrice(result.getDouble("price")));
+            }
+        } catch (SQLException ex){
+            System.out.println(ex.getSQLState());
+        }
+        return null;
+    }
+
     private int checkIfModelExists(MotorHouse motorHouse){
         //checks the view models if the model already exists
         try{
@@ -500,4 +532,6 @@ public class MotorHouseRepo implements IMotorHouse {
         }
         return null;
     }
+
+
 }
