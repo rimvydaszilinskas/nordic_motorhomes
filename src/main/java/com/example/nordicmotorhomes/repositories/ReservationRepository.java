@@ -3,6 +3,7 @@ package com.example.nordicmotorhomes.repositories;
 import com.example.nordicmotorhomes.models.Reservation;
 import com.example.nordicmotorhomes.repositories.util.Database;
 import com.example.nordicmotorhomes.utilities.JSON;
+import org.joda.time.DateTime;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -256,6 +257,59 @@ public class ReservationRepository implements IReservation {
             System.out.println("this error:" + ex.getSQLState());
         }
         return 0;
+    }
+
+    @Override
+    public List<Reservation> getUncheckedReservations() {
+        List<Reservation> reservations = new LinkedList<>();
+        try{
+            preparedStatement = conn.prepareStatement("SELECT bookings.* FROM bookings WHERE bookings.id NOT IN (SELECT reservation_id FROM checkup) ORDER BY id DESC");
+            result = preparedStatement.executeQuery();
+
+            while (result.next()){
+                reservations.add(new Reservation(result.getInt("id"),
+                        result.getDate("date_from").toString(),
+                        result.getDate("date_to").toString(),
+                        result.getDate("date_booked").toString(),
+                        result.getString("status"),
+                        result.getInt("customer_id"),
+                        result.getString("firstname") + " " + result.getString("lastname"),
+                        result.getInt("motorhome_id"),
+                        result.getString("manufacturer") + " " + result.getString("model"),
+                        result.getDouble("total")));
+            }
+        }catch (SQLException ex){
+            System.out.println(ex.getSQLState());
+        }
+        return reservations;
+    }
+
+    @Override
+    public List<Reservation> getTodaysReservations() {
+        List<Reservation> reservations = new LinkedList<>();
+        try{
+            preparedStatement = conn.prepareStatement("SELECT * FROM bookings WHERE date_from=? OR date_to=?");
+            preparedStatement.setString(1, DateTime.now().toString());
+            preparedStatement.setString(2, DateTime.now().toString());
+
+            result = preparedStatement.executeQuery();
+            while(result.next()){
+                reservations.add(new Reservation(result.getInt("id"),
+                        result.getDate("date_from").toString(),
+                        result.getDate("date_to").toString(),
+                        result.getDate("date_booked").toString(),
+                        result.getString("status"),
+                        result.getInt("customer_id"),
+                        result.getString("firstname") + " " + result.getString("lastname"),
+                        result.getInt("motorhome_id"),
+                        result.getString("manufacturer") + " " + result.getString("model"),
+                        result.getDouble("total")));
+            }
+        }catch (SQLException ex){
+            System.out.println(ex.getSQLState());
+        }
+
+        return reservations;
     }
 
     @Override

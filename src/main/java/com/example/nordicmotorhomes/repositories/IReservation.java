@@ -12,6 +12,8 @@ public interface IReservation {
     List<Reservation> getAll(Date from, Date to);
     List<Reservation> getVehicleReservations(int vanID);
     List<Reservation> getCustomerReservation(int customerID);
+    List<Reservation> getUncheckedReservations();
+    List<Reservation> getTodaysReservations();
     JSON getLastReservation(int vanID);
     boolean update(Reservation reservation);
     boolean delete(int id);
