@@ -22,7 +22,7 @@ public class ReservationController {
     private static final String defaultFilePath = "reservations/";
 
     private IReservation reservationRepository = new ReservationRepository();
-    private IMotorHouse motorHouseRepo = new MotorHouseRepo();
+    private IMotorHouse motorHouseRepo = new MotorHouseRepository();
     private IPerson<Customer> customerRepository = new PersonRepository();
     private IPayment paymentRepo = new PaymentRepository();
     private IExtras extraRepo = new ExtrasRepository();
@@ -42,7 +42,7 @@ public class ReservationController {
                          @RequestParam("beds")String beds,
                          Model model){
         //get free motorhouses
-        List<MotorHouse> motorHouses = new MotorHouseRepo().getAllFreeMotorhouses(dateFrom, dateTo, Integer.parseInt(seats), Integer.parseInt(beds));
+        List<MotorHouse> motorHouses = new MotorHouseRepository().getAllFreeMotorhouses(dateFrom, dateTo, Integer.parseInt(seats), Integer.parseInt(beds));
         String[] hold = dateFrom.split("-");
         LocalDate start = LocalDate.of(Integer.parseInt(hold[0]),
                                         Integer.parseInt(hold[1]),
@@ -136,7 +136,6 @@ public class ReservationController {
         reservation.setCustomerID(Integer.parseInt(customerID));
         reservation.setStatus("booked");
         reservation.setTotal(days * PriceCalculator.GetPrice(motorHouseRepo.get(Integer.parseInt(motorhouseID)).getPrice()) + extraRepo.inRangeTotal(ids));
-        System.out.println("total: " + extraRepo.inRangeTotal(ids));
         int id = reservationRepository.createGetID(reservation);
         if(id != 0)
             model.addAttribute("status", true);
@@ -170,22 +169,92 @@ public class ReservationController {
     @PostMapping(defaultPath + "/pay")
     public String registerPayment(@RequestParam("id")int id,
                                   @RequestParam("ammount")String ammount,
-                                  @RequestParam("description")String description){
+                                  @RequestParam("description")String description,
+                                  Model model){
+        Reservation reservation = reservationRepository.get(id);
+        List<Payment> payments = paymentRepo.getReservationPayments(id);
+        double ammountPaid = Double.parseDouble(ammount);
+        double totalPaid = 0;
+
+        if(ammountPaid < 5){
+            return "redirect:" + defaultPath + "/details/" + id;
+        }
+
+        for(Payment payment : payments){
+            totalPaid += payment.getAmmount();
+        }
+
+        if(totalPaid + ammountPaid > reservation.getTotal()){
+            double change = ammountPaid - (reservation.getTotal() - totalPaid);
+            ammountPaid -= change;
+
+            if(ammountPaid < 5){
+                return "redirect:" + defaultPath + "/details/" + id;
+            }
+
+            model.addAttribute("ammountPaid", ammountPaid);
+            model.addAttribute("change",  change);
+            model.addAttribute("hasChange", true);
+        }
+
+
 
         Payment payment = new Payment();
-        payment.setAmmount(Double.parseDouble(ammount));
+        payment.setAmmount(ammountPaid);
         payment.setReservation_id(id);
         payment.setDescription(description);
         payment.setDate(LocalDate.now());
 
-        paymentRepo.add(payment);
+        if(paymentRepo.add(payment)){
+            model.addAttribute("success", true);
+            model.addAttribute("message", "Payment successful.");
+        } else {
+            model.addAttribute("success", false);
+            model.addAttribute("message", "Payment could not be done.");
+        }
 
         return "redirect:" + defaultPath + "/details/" + id;
     }
 
     @GetMapping(defaultPath + "/cancel/{id}")
-    public String cancellation(@PathVariable("id")int id){
+    public String cancellation(@PathVariable("id")int id, Model model){
         Reservation reservation = reservationRepository.get(id);
+        long days = ChronoUnit.DAYS.between(reservation.getDateFrom(), LocalDate.now()) * (-1);
+        if(days >= 50){
+            //20% but minimum 200EUR.
+            double total = 0.2 * reservation.getTotal();
+            if(total >= 200)
+                reservation.setTotal(total);
+            else
+                reservation.setTotal(200);
+        } else if(days >= 15){
+            //50%
+            reservation.setTotal(reservation.getTotal() * 0.5);
+        } else if(days > 1){
+            //80%
+            reservation.setTotal(reservation.getTotal() * 0.8);
+        } else {
+            //95%
+            reservation.setTotal(reservation.getTotal() * 0.95);
+        }
+        //check if customer paid enough already
+        List<Payment> payments = paymentRepo.getReservationPayments(id);
+        double total = 0;
+
+        for(Payment payment : payments){
+            total += payment.getAmmount();
+        }
+
+        if(total > reservation.getTotal()){
+            double repay = (total - reservation.getTotal()) * (-1);
+            paymentRepo.add(new Payment(repay, id, LocalDate.now(), "Cancellation repay"));
+            model.addAttribute("repay", true);
+            model.addAttribute("repayMsg", "Repay the customer " + (total - reservation.getTotal()) + " EUR.");
+        } else if(total < reservation.getTotal()){
+            model.addAttribute("askRepay", true);
+            model.addAttribute("repayMsg", "Customer has to pay " + (reservation.getTotal() - total) + " EUR.");
+        }
+
         reservation.setStatus("cancelled");
         reservationRepository.update(reservation);
         return "redirect:" + defaultPath;
@@ -251,11 +320,18 @@ public class ReservationController {
         return "redirect:" + defaultPath;
     }
 
+    @GetMapping(defaultPath + "/dropoff/{id}")
+    public String dropOff(@PathVariable("id")int id, Model model){
+        model.addAttribute("id", id);
+        return defaultFilePath + "dropofflocation";
+    }
+
     @GetMapping(defaultPath + "/dropoff/skip/{id}")
     public String dropOffDetails(@PathVariable("id")int id, Model model){
         //navigate to enter the km
         model.addAttribute("id", id);
-        return "";
+        model.addAttribute("minMileage", motorHouseRepo.getReservation(id).getMileage());
+        return defaultFilePath + "confirmDropoff";
     }
 
     @PostMapping(defaultPath + "/dropoff/location")
@@ -270,17 +346,63 @@ public class ReservationController {
                 .append(",")
                 .append(country)
                 .toString();
+
         double distance = DistanceCounter.getDistance(fullAdress);
         double price = distance * 0.7;
         DecimalFormat decimalFormat = new DecimalFormat(".##");
+        MotorHouse motorHouse = motorHouseRepo.getReservation(id);
 
-        model.addAttribute("distanceMsg", "Are you sure you want to drop off the vehicle at " + fullAdress.toUpperCase() + " for extra " + decimalFormat.format(price) + " EUR.?");
+        model.addAttribute("distanceMsg", "By pressing confirm you confirm that the drop off will be at " + fullAdress.toUpperCase() + " for extra " + decimalFormat.format(price) + " EUR.");
         model.addAttribute("extraDistance", distance);
         model.addAttribute("id", id);
-        return "";
+        model.addAttribute("minMileage", motorHouse.getMileage() + distance);
+        return defaultFilePath + "confirmDropoff";
     }
 
     @PostMapping(defaultPath + "/dropoff/confirm")
+    public String dropOffConfirm(@RequestParam("id") int id,
+                                 @RequestParam("fuel") String fuelLevel,
+                                 @RequestParam("mileage")int mileage){
+        double fuel = Double.parseDouble(fuelLevel);
+
+        MotorHouse motorHouse = motorHouseRepo.getReservation(id);
+        motorHouse.setMileage(mileage);
+        motorHouseRepo.update(motorHouse);
+
+        Reservation reservation = reservationRepository.get(id);
+        if(1 - fuel < 0.5){
+            reservation.setTotal(reservation.getTotal() + 70);
+        }
+
+        Pickup pickup = pickupRepo.getReservationPickups(id).get(0);
+        int km_start = pickup.getMileage();
+        long days = ChronoUnit.DAYS.between(reservation.getDateFrom(), reservation.getDateTo());
+
+        //check the average km/day
+        if (days == 0){
+            days = 1;
+        }
+        if((mileage - km_start) / days > 400){
+            double difference = mileage - km_start - (days * 400);
+            reservation.setTotal(reservation.getTotal() + (int) difference);
+        }
+
+        List<Payment> payments = paymentRepo.getReservationPayments(id);
+
+        double paid = 0;
+        for(Payment payment : payments){
+            paid += payment.getAmmount();
+        }
+
+        if(paid >= reservation.getTotal()){
+            reservation.setStatus("finished");
+        } else {
+            reservation.setStatus("pending");
+        }
+        return "redirect: " + defaultPath;
+    }
+
+    @PostMapping(defaultPath + "/dropoff/confirmaddress")
     public String dropOffConfirm(@RequestParam("id")int id,
                                  @RequestParam("extraDistance")String extraDistance,
                                  @RequestParam("fuel")String fuelLevel,
@@ -323,6 +445,6 @@ public class ReservationController {
         } else {
             reservation.setStatus("pending");
         }
-        return "";
+        return "redirect:" + defaultPath;
     }
 }

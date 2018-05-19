@@ -2,7 +2,7 @@ package com.example.nordicmotorhomes.controllers;
 
 import com.example.nordicmotorhomes.models.MotorHouse;
 import com.example.nordicmotorhomes.models.Transmission;
-import com.example.nordicmotorhomes.repositories.MotorHouseRepo;
+import com.example.nordicmotorhomes.repositories.MotorHouseRepository;
 import com.example.nordicmotorhomes.repositories.ReservationRepository;
 import com.example.nordicmotorhomes.utilities.JSON;
 import org.springframework.stereotype.Controller;
@@ -15,7 +15,7 @@ import java.util.List;
 @Controller
 public class MotorHouseController {
 
-    MotorHouseRepo motorHouseRepo = new MotorHouseRepo();
+    MotorHouseRepository motorHouseRepository = new MotorHouseRepository();
     ReservationRepository reservationRepository = new ReservationRepository();
 
     private static final String defaultPath = "/motorhouse";
@@ -23,7 +23,7 @@ public class MotorHouseController {
 
     @GetMapping(defaultPath)
     public String index(Model model){
-        List<MotorHouse> motorHouses = motorHouseRepo.getAll();
+        List<MotorHouse> motorHouses = motorHouseRepository.getAll();
 
         //to avoid conflicts with thymeleaf conditionals
         if(motorHouses == null)
@@ -33,16 +33,16 @@ public class MotorHouseController {
         model.addAttribute("sBrand", "default");
         model.addAttribute("sGearbox", "default");
         model.addAttribute("sTransmission", new Transmission("default"));
-        model.addAttribute("transmissions", motorHouseRepo.getAllTransmissions());
-        model.addAttribute("gearboxes", motorHouseRepo.getAllGearboxes());
-        model.addAttribute("manufacturers", motorHouseRepo.getAllManufacturers());
+        model.addAttribute("transmissions", motorHouseRepository.getAllTransmissions());
+        model.addAttribute("gearboxes", motorHouseRepository.getAllGearboxes());
+        model.addAttribute("manufacturers", motorHouseRepository.getAllManufacturers());
 
         return defaultFilePath + "display";
     }
 
     @GetMapping(defaultPath + "/delete/{id}")
     public String delete(@PathVariable("id") int id){
-        motorHouseRepo.delete(id);
+        motorHouseRepository.delete(id);
         return "redirect:" + defaultPath;
     }
 
@@ -55,7 +55,7 @@ public class MotorHouseController {
     @ResponseBody
     public String JSONDetails(@RequestParam("id") int id){
         JSON json = new JSON();
-        MotorHouse motorHouse = motorHouseRepo.get(id);
+        MotorHouse motorHouse = motorHouseRepository.get(id);
         json.add("manufacturer", motorHouse.getManufacturer())
                 .add("model", motorHouse.getModel())
                 .add("bed_count", motorHouse.getBed_count())
@@ -76,7 +76,7 @@ public class MotorHouseController {
     public String deleteDetails(@RequestParam("id") int id){
         //used to display a modal before deleting motorhouse
         JSON json = new JSON();
-        MotorHouse motorHouse = motorHouseRepo.get(id);
+        MotorHouse motorHouse = motorHouseRepository.get(id);
         json.add("model", motorHouse.getManufacturer() + " " + motorHouse.getModel());
         json.add("id", motorHouse.getId());
 
@@ -85,7 +85,7 @@ public class MotorHouseController {
 
     @PostMapping(defaultPath + "/create")
     public String create(@ModelAttribute MotorHouse motorHouse){
-        motorHouseRepo.add(motorHouse);
+        motorHouseRepository.add(motorHouse);
         return "redirect:" + defaultPath;
     }
 
@@ -102,7 +102,7 @@ public class MotorHouseController {
         if(price.length() == 0)
             price = "0";
 
-        List<MotorHouse> motorHouses = motorHouseRepo.getAllOnFilters(brand, gearbox, transmission, Integer.parseInt(price));
+        List<MotorHouse> motorHouses = motorHouseRepository.getAllOnFilters(brand, gearbox, transmission, Integer.parseInt(price));
 
         if(motorHouses == null)
             motorHouses = new LinkedList<>();
@@ -111,9 +111,9 @@ public class MotorHouseController {
         model.addAttribute("sBrand", brand);
         model.addAttribute("sGearbox", gearbox);
         model.addAttribute("sTransmission", new Transmission(transmission));
-        model.addAttribute("transmissions", motorHouseRepo.getAllTransmissions());
-        model.addAttribute("gearboxes", motorHouseRepo.getAllGearboxes());
-        model.addAttribute("manufacturers", motorHouseRepo.getAllManufacturers());
+        model.addAttribute("transmissions", motorHouseRepository.getAllTransmissions());
+        model.addAttribute("gearboxes", motorHouseRepository.getAllGearboxes());
+        model.addAttribute("manufacturers", motorHouseRepository.getAllManufacturers());
 
         return defaultFilePath + "display";
     }
@@ -121,21 +121,21 @@ public class MotorHouseController {
     @GetMapping(defaultPath + "/edit/{id}")
     public String edit(@PathVariable("id")int id, Model model){
 
-        model.addAttribute("motorhouse", motorHouseRepo.get(id));
+        model.addAttribute("motorhouse", motorHouseRepository.get(id));
 
         return defaultFilePath + "edit";
     }
 
     @PostMapping(defaultPath + "/edit")
     public String edit(@ModelAttribute MotorHouse motorHouse){
-        motorHouseRepo.update(motorHouse);
+        motorHouseRepository.update(motorHouse);
         return "redirect:" + defaultPath;
     }
 
     @GetMapping(defaultPath + "/details/{id}")
     public String details(@PathVariable("id")int id, Model model){
 
-        model.addAttribute("motorhouse", motorHouseRepo.get(id));
+        model.addAttribute("motorhouse", motorHouseRepository.get(id));
         model.addAttribute("reservations", reservationRepository.getVehicleReservations(id));
 
         return defaultFilePath + "details";

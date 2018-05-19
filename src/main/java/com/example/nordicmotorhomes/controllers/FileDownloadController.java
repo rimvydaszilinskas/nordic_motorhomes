@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLConnection;
-import java.nio.file.Files;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -25,7 +24,7 @@ public class FileDownloadController {
     private IReservation reservationRepository = new ReservationRepository();
     private IExtras extrasRepository = new ExtrasRepository();
     private IPayment paymentRepository = new PaymentRepository();
-    private IMotorHouse motorHouseRepository = new MotorHouseRepo();
+    private IMotorHouse motorHouseRepository = new MotorHouseRepository();
 
     @GetMapping("/bills/{id}/{type}")
     public void downloadFile(@PathVariable("type")String type,

@@ -10,6 +10,13 @@
 <main>
     <div class="container">
         <div class="row">
+            <div class="col" th:if="${success} or ${error}">
+                <div th:if="${success}" class="alert alert-success" role="alert" th:text="${success}"></div>
+                <div th:if="${hasChange}" class="alert alert-secondary" role="alert" th:text="'Ammount paid: <b>' + ${ammountPaid} + '</b> EUR. Change <b>' + ${change} + '</b> EUR.'"></div>
+                <div th:if="${!success}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+            </div>
+        </div>
+        <div class="row">
             <div class="col">
                 <p>
                     Date: <span th:text="${reservation.dateFrom} + ' - ' + ${reservation.dateTo}"></span><br/>
@@ -46,7 +53,7 @@
                     <tbody>
                         <tr th:each="payment : ${payments}">
                             <td scope="col" th:text="${payment.id}"></td>
-                            <td th:text="${payment.ammount}"></td>
+                            <td th:text="${payment.amount}"></td>
                             <td th:text="${payment.date}"></td>
                             <td th:text="${payment.description}"></td>
                         </tr>
@@ -78,8 +85,8 @@
                 <div class="modal-body">
                     <input type="text" id="id" name="id" th:value="${reservation.id}" hidden>
                     <div class="form-group">
-                        <label for="ammount">Ammount</label>
-                        <input class="form-control" type="number" id="ammount" name="ammount" step="0.1">
+                        <label for="amount">Ammount</label>
+                        <input class="form-control" type="number" id="amount" name="amount" step="0.1" value="0">
                     </div>
                     <div class="form-group">
                         <label for="description">Description</label>

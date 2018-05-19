@@ -13,12 +13,12 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MotorHouseRepo implements IMotorHouse {
+public class MotorHouseRepository implements IMotorHouse {
     private Connection conn;
     private PreparedStatement preparedStatement;
     private ResultSet result;
 
-    public MotorHouseRepo(){
+    public MotorHouseRepository(){
         try {
             this.conn = Database.getConnection();
         } catch (SQLException e) {
@@ -364,8 +364,8 @@ public class MotorHouseRepo implements IMotorHouse {
 
         try{
             preparedStatement = conn.prepareStatement("SELECT * FROM motorhome WHERE id NOT IN " +
-                    "(SELECT motorhome_id FROM reservations WHERE date_from BETWEEN ? AND ? OR " +
-                    "date_to BETWEEN ? AND ?) AND seats >= ? AND bed_count >= ?;");
+                    "(SELECT motorhome_id FROM reservations WHERE (date_from BETWEEN ? AND ? OR " +
+                    "date_to BETWEEN ? AND ?) AND status='booked') AND seats >= ? AND bed_count >= ?;");
 
             preparedStatement.setString(1, from);
             preparedStatement.setString(2, to);
