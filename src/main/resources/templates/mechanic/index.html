@@ -44,6 +44,32 @@
                 </table>
             </div>
         </div>
+        <div class="row">
+            <div class="col">
+                <table class="table" th:if="${!services.isEmpty()}">
+                    <thead>
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Motorhome ID</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody th:each="service : ${services}">
+                        <td scope="row" th:text="${service.id}"></td>
+                        <td th:if="${service.dateTo == null}" th:text="${service.dateFrom}"></td>
+                        <td th:if="${service.dateTo != null}" th:text="${service.dateFrom} + ' - ' + ${service.dateTo}"></td>
+                        <td th:text="${service.motorhouseID}"></td>
+                        <td>
+                            <a class="btn btn-success" th:href="'/service/edit/' + ${service.id}">Edit</a>
+                        </td>
+                    </tbody>
+                </table>
+                <div th:if="${services.isEmpty()}" class="alert alert-success" role="alert">
+                    No ongoing services.
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 

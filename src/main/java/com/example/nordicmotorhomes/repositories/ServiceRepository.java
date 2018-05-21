@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -55,6 +56,34 @@ public class ServiceRepository implements IService{
         List<Service> services = new LinkedList<>();
         try{
             preparedStatement = conn.prepareStatement("SELECT * FROM service");
+
+            result = preparedStatement.executeQuery();
+
+            while(result.next()){
+                services.add(new Service(result.getInt("id"),
+                        result.getInt("motorhouse_id"),
+                        result.getString("date_from"),
+                        result.getString("date_to"),
+                        result.getString("description"),
+                        result.getInt("lights"),
+                        result.getInt("chasis"),
+                        result.getInt("engine"),
+                        result.getInt("interior"),
+                        result.getInt("exterior"),
+                        result.getDouble("ammount")));
+            }
+        }catch (SQLException ex){
+            System.out.println(ex.getSQLState());
+        }
+        return services;
+    }
+
+    @Override
+    public List<Service> getOngoing() {
+        List<Service> services = new LinkedList<>();
+        try{
+            preparedStatement = conn.prepareStatement("SELECT * FROM service WHERE date_to IS NULL OR date_to>?");
+            preparedStatement.setString(1, LocalDate.now().toString());
 
             result = preparedStatement.executeQuery();
 
@@ -149,20 +178,34 @@ public class ServiceRepository implements IService{
     @Override
     public boolean update(Service service) {
         try{
-            preparedStatement = conn.prepareStatement("UPDATE service SET motorhouse_id=?, date_from=?, date_to=?, description=?, " +
-                    "lights=?, chasis=?, engine=?, interrior=?, exterrior=?,ammmount=? WHERE id=?");
+            if(service.getDateTo() != null) {
+                preparedStatement = conn.prepareStatement("UPDATE service SET date_from=?, date_to=?, description=?, " +
+                        "lights=?, chasis=?, engine=?, interior=?, exterior=?,ammount=? WHERE id=?");
 
-            preparedStatement.setInt(1, service.getMotorhouseID());
-            preparedStatement.setString(2, service.getDateFrom().toString());
-            preparedStatement.setString(3, service.getDateTo().toString());
-            preparedStatement.setString(4, service.getDescription());
-            preparedStatement.setInt(5, service.getLights());
-            preparedStatement.setInt(6, service.getChasis());
-            preparedStatement.setInt(7, service.getEngine());
-            preparedStatement.setInt(8, service.getInterrior());
-            preparedStatement.setInt(9, service.getExterrior());
-            preparedStatement.setDouble(10, service.getAmount());
-            preparedStatement.setInt(11, service.getId());
+                preparedStatement.setString(1, service.getDateFrom().toString());
+                preparedStatement.setString(2, service.getDateTo().toString());
+                preparedStatement.setString(3, service.getDescription());
+                preparedStatement.setInt(4, service.getLights());
+                preparedStatement.setInt(5, service.getChasis());
+                preparedStatement.setInt(6, service.getEngine());
+                preparedStatement.setInt(7, service.getInterrior());
+                preparedStatement.setInt(8, service.getExterrior());
+                preparedStatement.setDouble(9, service.getAmount());
+                preparedStatement.setInt(10, service.getId());
+            } else {
+                preparedStatement = conn.prepareStatement("UPDATE service SET date_from=?, description=?, " +
+                        "lights=?, chasis=?, engine=?, interior=?, exterior=?,ammount=? WHERE id=?");
+                preparedStatement.setString(1, service.getDateFrom().toString());
+                preparedStatement.setString(2, service.getDescription());
+                preparedStatement.setInt(3, service.getLights());
+                preparedStatement.setInt(4, service.getChasis());
+                preparedStatement.setInt(5, service.getEngine());
+                preparedStatement.setInt(6, service.getInterrior());
+                preparedStatement.setInt(7, service.getExterrior());
+                preparedStatement.setDouble(8, service.getAmount());
+                preparedStatement.setInt(9, service.getId());
+
+            }
 
             if(preparedStatement.executeUpdate() > 0){
                 return true;

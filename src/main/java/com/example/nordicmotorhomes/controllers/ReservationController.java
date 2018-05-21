@@ -118,7 +118,7 @@ public class ReservationController {
                 Integer.parseInt(hold[1]),
                 Integer.parseInt(hold[2]));
 
-        long days = ChronoUnit.DAYS.between(start, end);
+        long days = ChronoUnit.DAYS.between(start, end) + 1;
 
         List<Integer> ids = new LinkedList<>();
         if(!extras.equals("default")){

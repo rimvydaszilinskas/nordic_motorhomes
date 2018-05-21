@@ -26,7 +26,7 @@ public class MechanicController {
     @GetMapping(defaultPath)
     public String index(Model model){
         model.addAttribute("motorhouses", motorHouseRepository.getAll());
-        model.addAttribute("services", serviceRepository.getAll());
+        model.addAttribute("services", serviceRepository.getOngoing());
         return defaultFilePath + "index";
     }
 
@@ -174,7 +174,7 @@ public class MechanicController {
     @PostMapping(defaultPath + "/edit/{serviceID}")
     public String editService(@PathVariable("serviceID")int id,
                               @RequestParam(value = "dateFrom")String dateFrom,
-                              @RequestParam(value = "dateTo") String dateTo,
+                              @RequestParam(value = "dateTo", required = false) String dateTo,
                               @RequestParam(value = "lights", required = false)String lights,
                               @RequestParam(value = "engine", required = false)String engine,
                               @RequestParam(value = "chasis", required = false)String chassis,
@@ -185,7 +185,9 @@ public class MechanicController {
 
         Service service = new Service();
 
-        service.setDateTo(dateTo);
+        if(dateTo != null && !dateTo.equals(""))
+            service.setDateTo(dateTo);
+        service.setId(id);
         service.setDateFrom(dateFrom);
         service.setDescription(description);
         service.setAmount(Double.parseDouble(amount));
