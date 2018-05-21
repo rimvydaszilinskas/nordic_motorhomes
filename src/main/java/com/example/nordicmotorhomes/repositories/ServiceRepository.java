@@ -108,19 +108,34 @@ public class ServiceRepository implements IService{
     @Override
     public boolean create(Service service) {
         try{
-            preparedStatement = conn.prepareStatement("INSERT INTO service (motorhouse_id, date_from, date_to, description, lights, chasis, engine, interior, exterior, ammount) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            if(service.getDateTo() == null){
+                preparedStatement = conn.prepareStatement("INSERT INTO service (motorhouse_id, date_from, description, lights, chasis, engine, interior, exterior, ammount) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-            preparedStatement.setInt(1, service.getMotorhouseID());
-            preparedStatement.setString(2, service.getDateFrom().toString());
-            preparedStatement.setString(3, service.getDateTo().toString());
-            preparedStatement.setString(4, service.getDescription());
-            preparedStatement.setInt(5, service.getLights());
-            preparedStatement.setInt(6, service.getChasis());
-            preparedStatement.setInt(7, service.getEngine());
-            preparedStatement.setInt(8, service.getInterrior());
-            preparedStatement.setInt(9, service.getExterrior());
-            preparedStatement.setDouble(10, service.getAmount());
+                preparedStatement.setInt(1, service.getMotorhouseID());
+                preparedStatement.setString(2, service.getDateFrom().toString());
+                preparedStatement.setString(3, service.getDescription());
+                preparedStatement.setInt(4, service.getLights());
+                preparedStatement.setInt(5, service.getChasis());
+                preparedStatement.setInt(6, service.getEngine());
+                preparedStatement.setInt(7, service.getInterrior());
+                preparedStatement.setInt(8, service.getExterrior());
+                preparedStatement.setDouble(9, service.getAmount());
+            } else {
+                preparedStatement = conn.prepareStatement("INSERT INTO service (motorhouse_id, date_from, date_to, description, lights, chasis, engine, interior, exterior, ammount) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+                preparedStatement.setInt(1, service.getMotorhouseID());
+                preparedStatement.setString(2, service.getDateFrom().toString());
+                preparedStatement.setString(3, service.getDateTo().toString());
+                preparedStatement.setString(4, service.getDescription());
+                preparedStatement.setInt(5, service.getLights());
+                preparedStatement.setInt(6, service.getChasis());
+                preparedStatement.setInt(7, service.getEngine());
+                preparedStatement.setInt(8, service.getInterrior());
+                preparedStatement.setInt(9, service.getExterrior());
+                preparedStatement.setDouble(10, service.getAmount());
+            }
 
             if(preparedStatement.executeUpdate() > 0){
                 return true;

@@ -43,7 +43,8 @@ public class Service extends MandatoryCheck{
         this.id = id;
         this.motorhouseID = motorhouseID;
         setDateFrom(dateFrom);
-        setDateTo(dateTo);
+        if(dateTo != null && !dateTo.equals(""))
+            setDateTo(dateTo);
         this.description = description;
         super.setLights(lights);
         super.setChassis(chassis);

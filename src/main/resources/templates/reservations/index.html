@@ -44,7 +44,7 @@
                                 <td><a th:text="${reservation.motorhouseName}" th:href="'/motorhouse/details/' + ${reservation.motorhouseID}"></a></td>
                                 <td th:text="${reservation.status}"></td>
                                 <td>
-                                    <a class="btn btn-primary" th:if="${today.toString().equals(reservation.dateFrom.toString()) and !reservation.status.equals('taken')}" th:href="'reservation/pickup/' + ${reservation.id}" role="button">Pick up</a>
+                                    <a class="btn btn-primary" th:if="${today.toString().equals(reservation.dateFrom.toString()) AND !reservation.status.equals('taken') AND !reservation.status.equals('pending') AND !reservation.status.equals('finished')}" th:href="'reservation/pickup/' + ${reservation.id}" role="button">Pick up</a>
                                     <a class="btn btn-primary" th:if="${today.toString().equals(reservation.dateTo.toString()) AND reservation.status.equals('taken')}" th:href="'reservation/dropoff/' + ${reservation.id}" role="button">Drop off</a>
                                     <a class="btn btn-secondary" th:href="'/reservation/details/' + ${reservation.id}" role="button">Details</a>
                                     <button class="btn btn-danger delete" th:id="'delete_' + ${reservation.id}">Delete</button>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/style.css}">
+    <title th:text="${title} ? ${title} : 'Motorhomes'"></title>
+</head>
+<body>
+<main>
+    <form th:fragment="mechanicForm">
+        <div class="form-group">
+            <label for="dateFrom">Date from</label>
+            <input type="date" class="form-control" id="dateFrom" name="dateFrom" th:value="${service?.dateFrom}">
+        </div>
+        <div class="form-group">
+            <label for="dateTo">Date to</label>
+            <input type="date" class="form-control" id="dateTo" name="dateTo" th:value="${service?.dateTo}">
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="OK" id="engine" name="engine" th:checked="${service?.engine}">
+            <label class="form-check-label" for="engine">
+                Engine OK
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="OK" id="lights" name="lights" th:checked="${service?.lights}">
+            <label class="form-check-label" for="lights">
+                Lights OK
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="OK" id="chasis" name="chasis" th:checked="${service?.chassis}">
+            <label class="form-check-label" for="chasis">
+                Suspension OK
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="OK" id="interior" name="interior" th:checked="${service?.interior}">
+            <label class="form-check-label" for="interior">
+                Interior OK
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="OK" id="exterior" name="exterior" th:checked="${service?.exterior}">
+            <label class="form-check-label" for="exterior">
+                Exterior OK
+            </label>
+        </div>
+        <div class="form-group">
+            <label for="notes">Notes</label>
+            <textarea class="form-control" rows="5" id="notes" name="notes" th:value="${service?.description}"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="amount">Amount</label>
+            <input type="number" class="form-control" id="amount" name="amount" step='0.01' th:value="${service?.amount}">
+        </div>
+        <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+</main>
+</body>
+</html>

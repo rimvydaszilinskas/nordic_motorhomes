@@ -11,6 +11,7 @@ public interface IMotorHouse {
     boolean delete(int id);
     boolean addModel(MotorHouse motorHouse);
     boolean update(MotorHouse motorHouse);
+    boolean updateMileage(MotorHouse motorHouse);
     List<MotorHouse> getAll();
     List<MotorHouse> getAllOnGearbox(String gearbox);
     List<MotorHouse> getAllOnCategory(String category);

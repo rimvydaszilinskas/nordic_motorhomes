@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 
 @Controller
 public class MechanicController {
@@ -91,27 +92,52 @@ public class MechanicController {
     public String registerService(@PathVariable("motorhomeID")int id, Model model){
         model.addAttribute("motorhome", motorHouseRepository.get(id));
 
-        return defaultFilePath + "service";
+        return defaultFilePath + "register";
     }
 
     @PostMapping(defaultPath + "/register/{motorhomeID}")
     public String registerService(@PathVariable("motorhomeID")int id,
                                   @RequestParam(value = "dateFrom")String dateFrom,
-                                  @RequestParam(value = "dateTo") String dateTo,
-                                  @RequestParam(value = "lights", required = false)String lights,
-                                  @RequestParam(value = "engine", required = false)String engine,
-                                  @RequestParam(value = "chasis", required = false)String chasis,
-                                  @RequestParam(value = "interior", required = false)String interior,
-                                  @RequestParam(value = "exterior", required = false)String exterior,
-                                  @RequestParam(value = "description", required = false)String description,
-                                  @RequestParam(value = "amount", required = false)String amount){
+                                  @RequestParam(value = "dateTo", required = false) String dateTo,
+                                  @RequestParam(value = "lights", required = false) String lights,
+                                  @RequestParam(value = "engine", required = false) String engine,
+                                  @RequestParam(value = "chasis", required = false) String chassis,
+                                  @RequestParam(value = "interior", required = false) String interior,
+                                  @RequestParam(value = "exterior", required = false) String exterior,
+                                  @RequestParam(value = "description", required = false) String description,
+                                  @RequestParam(value = "amount", required = false) String amount,
+                                  Model model){
 
         Service service = new Service();
+        service.setMotorhouseID(id);
 
-        service.setDateTo(dateTo);
+        if(dateFrom.equals("")) {
+            model.addAttribute("error", "Start date not present.");
+            model.addAttribute("motorhome", motorHouseRepository.get(id));
+            return defaultFilePath + "/register";
+        }
+        if(!dateTo.equals("")) {
+            String[] dateSplit = dateTo.split("-");
+            LocalDate dateto = LocalDate.of(Integer.parseInt(dateSplit[0]),
+                    Integer.parseInt(dateSplit[1]),
+                    Integer.parseInt(dateSplit[2]));
+            dateSplit = dateFrom.split("-");
+            LocalDate datefrom = LocalDate.of(Integer.parseInt(dateSplit[0]),
+                    Integer.parseInt(dateSplit[1]),
+                    Integer.parseInt(dateSplit[2]));
+
+            if(ChronoUnit.DAYS.between(datefrom, dateto) < 0){
+                model.addAttribute("error", "Due date cannot be earlier than start date. ");
+                model.addAttribute("motorhome", motorHouseRepository.get(id));
+                return defaultFilePath + "/register";
+            }
+            service.setDateTo(dateTo);
+        }
         service.setDateFrom(dateFrom);
         service.setDescription(description);
-        service.setAmount(Double.parseDouble(amount));
+
+        if(amount != null && !amount.equals(""))
+            service.setAmount(Double.parseDouble(amount));
 
         if(lights != null)
             service.setLights(lights.equals("OK"));
@@ -121,8 +147,8 @@ public class MechanicController {
             service.setEngine(engine.equals("OK"));
         else
             service.setEngine(false);
-        if(chasis != null)
-            service.setChassis(chasis.equals("OK"));
+        if(chassis != null)
+            service.setChassis(chassis.equals("OK"));
         else
             service.setChassis(false);
         if(interior != null)
@@ -151,7 +177,7 @@ public class MechanicController {
                               @RequestParam(value = "dateTo") String dateTo,
                               @RequestParam(value = "lights", required = false)String lights,
                               @RequestParam(value = "engine", required = false)String engine,
-                              @RequestParam(value = "chasis", required = false)String chasis,
+                              @RequestParam(value = "chasis", required = false)String chassis,
                               @RequestParam(value = "interior", required = false)String interior,
                               @RequestParam(value = "exterior", required = false)String exterior,
                               @RequestParam(value = "description", required = false)String description,
@@ -172,8 +198,8 @@ public class MechanicController {
             service.setEngine(engine.equals("OK"));
         else
             service.setEngine(false);
-        if(chasis != null)
-            service.setChassis(chasis.equals("OK"));
+        if(chassis != null)
+            service.setChassis(chassis.equals("OK"));
         else
             service.setChassis(false);
         if(interior != null)

@@ -136,7 +136,9 @@ public class ReservationController {
         reservation.setCustomerID(Integer.parseInt(customerID));
         reservation.setStatus("booked");
         reservation.setTotal(days * PriceCalculator.GetPrice(motorHouseRepo.get(Integer.parseInt(motorhouseID)).getPrice()) + extraRepo.inRangeTotal(ids));
+
         int id = reservationRepository.createGetID(reservation);
+
         if(id != 0)
             model.addAttribute("status", true);
         else
@@ -168,7 +170,7 @@ public class ReservationController {
 
     @PostMapping(defaultPath + "/pay")
     public String registerPayment(@RequestParam("id")int id,
-                                  @RequestParam("ammount")String ammount,
+                                  @RequestParam("amount")String ammount,
                                   @RequestParam("description")String description,
                                   Model model){
         Reservation reservation = reservationRepository.get(id);
@@ -197,13 +199,18 @@ public class ReservationController {
             model.addAttribute("hasChange", true);
         }
 
+        if(totalPaid + ammountPaid > reservation.getTotal() -1){
 
+            reservation.setStatus("finished");
+            reservationRepository.update(reservation);
+        }
 
         Payment payment = new Payment();
         payment.setAmmount(ammountPaid);
         payment.setReservation_id(id);
         payment.setDescription(description);
         payment.setDate(LocalDate.now());
+
 
         if(paymentRepo.add(payment)){
             model.addAttribute("success", true);
@@ -362,12 +369,13 @@ public class ReservationController {
     @PostMapping(defaultPath + "/dropoff/confirm")
     public String dropOffConfirm(@RequestParam("id") int id,
                                  @RequestParam("fuel") String fuelLevel,
-                                 @RequestParam("mileage")int mileage){
+                                 @RequestParam("mileage") String mileageString){
         double fuel = Double.parseDouble(fuelLevel);
+        int mileage = Integer.parseInt(mileageString);
 
         MotorHouse motorHouse = motorHouseRepo.getReservation(id);
         motorHouse.setMileage(mileage);
-        motorHouseRepo.update(motorHouse);
+        motorHouseRepo.updateMileage(motorHouse);
 
         Reservation reservation = reservationRepository.get(id);
         if(1 - fuel < 0.5){
@@ -394,12 +402,14 @@ public class ReservationController {
             paid += payment.getAmmount();
         }
 
-        if(paid >= reservation.getTotal()){
+        if(paid >= reservation.getTotal() - 1){
             reservation.setStatus("finished");
         } else {
             reservation.setStatus("pending");
         }
-        return "redirect: " + defaultPath;
+
+        reservationRepository.update(reservation);
+        return "redirect:" + defaultPath;
     }
 
     @PostMapping(defaultPath + "/dropoff/confirmaddress")

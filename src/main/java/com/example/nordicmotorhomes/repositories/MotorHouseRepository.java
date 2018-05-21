@@ -273,14 +273,13 @@ public class MotorHouseRepository implements IMotorHouse {
 
             } else {
                 //if model does not exist
-                preparedStatement = conn.prepareStatement("INSERT INTO models(manufacturer, model, bed_count, seats, weight, description) VALUES(?, ?, ?, ?, ?, ?, ?)");
+                preparedStatement = conn.prepareStatement("INSERT INTO models(manufacturer, model, bed_count, seats, weight, description) VALUES(?, ?, ?, ?, ?, ?)");
                 preparedStatement.setString(1, motorHouse.getManufacturer());
                 preparedStatement.setString(2, motorHouse.getModel());
                 preparedStatement.setInt(3, motorHouse.getBed_count());
                 preparedStatement.setInt(4, motorHouse.getSeats());
                 preparedStatement.setInt(5, motorHouse.getWeight());
                 preparedStatement.setString(6, motorHouse.getDescription());
-                preparedStatement.setInt(7, motorHouse.getPower());
 
                 if(preparedStatement.executeUpdate() == 0)
                     return false;
@@ -365,7 +364,9 @@ public class MotorHouseRepository implements IMotorHouse {
         try{
             preparedStatement = conn.prepareStatement("SELECT * FROM motorhome WHERE id NOT IN " +
                     "(SELECT motorhome_id FROM reservations WHERE (date_from BETWEEN ? AND ? OR " +
-                    "date_to BETWEEN ? AND ?) AND status='booked') AND seats >= ? AND bed_count >= ?;");
+                    "date_to BETWEEN ? AND ?) AND status='booked') " +
+                    "AND id NOT IN(SELECT motorhouse_id FROM service WHERE (date_from BETWEEN \"2018-07-01\" AND \"2018-07-30\" OR date_to BETWEEN \"2018-07-01\" AND \"2018-07-30\")) " +
+                    "AND seats >= ? AND bed_count >= ?;");
 
             preparedStatement.setString(1, from);
             preparedStatement.setString(2, to);
@@ -428,6 +429,21 @@ public class MotorHouseRepository implements IMotorHouse {
             System.out.println(ex.getSQLState());
         }
         return null;
+    }
+
+    @Override
+    public boolean updateMileage(MotorHouse motorHouse){
+        try{
+            preparedStatement = conn.prepareStatement("UPDATE motorhomes SET mileage=?");
+            preparedStatement.setInt(1, motorHouse.getMileage());
+
+            if(preparedStatement.executeUpdate() > 0){
+                return true;
+            }
+        }catch (SQLException ex){
+            System.out.println(ex.getSQLState());
+        }
+        return false;
     }
 
     private int checkIfModelExists(MotorHouse motorHouse){

@@ -18,27 +18,32 @@
             </div>
         </div>
         <div class="row">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">Reservation ID</th>
-                    <th scope="col">Model</th>
-                    <th scope="col">Date finished</th>
-                    <th scope="col"></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="reservation : ${reservations}">
-                    <td scope="row" th:text="${reservation.id}"></td>
-                    <td th:text="'(' + ${reservation.motorhouseID} + ') ' + ${reservation.motorhouseName}"></td>
-                    <td th:text="${reservation.dateTo}"></td>
-                    <td>
-                        <a class="btn btn-secondary details" th:href="'/motorhouse/details/' + ${reservation.motorhouseID}" role="button">Details</a>
-                        <a class="btn btn-info" th:href="'/service/check/' + ${reservation.id}" role="button">Checkup</a>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="col">
+                <table class="table" th:if="${!reservations.isEmpty()}">
+                    <thead>
+                    <tr>
+                        <th scope="col">Reservation ID</th>
+                        <th scope="col">Model</th>
+                        <th scope="col">Date finished</th>
+                        <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="reservation : ${reservations}">
+                        <td scope="row" th:text="${reservation.id}"></td>
+                        <td th:text="'(' + ${reservation.motorhouseID} + ') ' + ${reservation.motorhouseName}"></td>
+                        <td th:text="${reservation.dateTo}"></td>
+                        <td>
+                            <a class="btn btn-secondary details" th:href="'/motorhouse/details/' + ${reservation.motorhouseID}" role="button">Details</a>
+                            <a class="btn btn-info" th:href="'/service/check/' + ${reservation.id}" role="button">Checkup</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div th:if="${reservations.isEmpty()}" class="alert alert-success" role="alert">
+                    No checks required.
+                </div>
+            </div>
         </div>
     </div>
 </main>
