@@ -15,11 +15,11 @@ public class MainController {
     public String index(Model model){
         model.addAttribute("reservations", reservationRepository.getTodaysReservations());
         model.addAttribute("unchecked", reservationRepository.getUncheckedReservations());
-        return "index";
+        return "redirect:/customers";
     }
 
-//    @GetMapping("/error")
-//    public String error(){
-//        return "";
-//    }
+    @GetMapping("/error")
+    public String error(){
+        return "error";
+    }
 }

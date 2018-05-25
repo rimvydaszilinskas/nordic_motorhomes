@@ -56,9 +56,10 @@ public class ReservationRepository implements IReservation {
     public List<Reservation> getAll() {
         List<Reservation> reservations = new LinkedList<>();
         try{
-            preparedStatement = conn.prepareStatement("SELECT * FROM bookings WHERE date_from > ? OR status != 'finished' ORDER BY date_from ASC");
+            preparedStatement = conn.prepareStatement("SELECT * FROM bookings WHERE date_from >= ? OR date_to >= ? OR status!='finished' ORDER BY date_from ASC");
 
             preparedStatement.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
+            preparedStatement.setDate(2, java.sql.Date.valueOf(LocalDate.now()));
 
             result = preparedStatement.executeQuery();
 

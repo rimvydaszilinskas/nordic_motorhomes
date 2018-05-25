@@ -61,7 +61,7 @@ public class ReservationController {
         model.addAttribute("dateTo", dateTo);
         model.addAttribute("days", days);
 
-        return defaultFilePath + "/results";
+        return defaultFilePath + "results";
     }
 
     @GetMapping(defaultPath + "/reserve")
