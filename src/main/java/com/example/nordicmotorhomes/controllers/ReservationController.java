@@ -23,10 +23,11 @@ public class ReservationController {
 
     private IReservation reservationRepository = new ReservationRepository();
     private IMotorHouse motorHouseRepo = new MotorHouseRepository();
-    private IPerson<Customer> customerRepository = new PersonRepository();
+    private IPerson<Customer> customerRepository = new CustomerRepository();
     private IPayment paymentRepo = new PaymentRepository();
     private IExtras extraRepo = new ExtrasRepository();
     private IPickupDropoff pickupRepo = new PickupDropOffRepository();
+    private IDelivery deliveryRepo = new DeliveryRepository();
 
     @GetMapping(defaultPath)
     public String index(Model model){
@@ -178,7 +179,7 @@ public class ReservationController {
         double ammountPaid = Double.parseDouble(ammount);
         double totalPaid = 0;
 
-        if(ammountPaid < 5){
+        if(ammountPaid < 5 && ammountPaid > 0){
             return "redirect:" + defaultPath + "/details/" + id;
         }
 

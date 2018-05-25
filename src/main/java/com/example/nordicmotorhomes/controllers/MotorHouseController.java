@@ -2,6 +2,8 @@ package com.example.nordicmotorhomes.controllers;
 
 import com.example.nordicmotorhomes.models.MotorHouse;
 import com.example.nordicmotorhomes.models.Transmission;
+import com.example.nordicmotorhomes.repositories.IMotorHouse;
+import com.example.nordicmotorhomes.repositories.IReservation;
 import com.example.nordicmotorhomes.repositories.MotorHouseRepository;
 import com.example.nordicmotorhomes.repositories.ReservationRepository;
 import com.example.nordicmotorhomes.utilities.JSON;
@@ -15,8 +17,8 @@ import java.util.List;
 @Controller
 public class MotorHouseController {
 
-    MotorHouseRepository motorHouseRepository = new MotorHouseRepository();
-    ReservationRepository reservationRepository = new ReservationRepository();
+    private IMotorHouse motorHouseRepository = new MotorHouseRepository();
+    private IReservation reservationRepository = new ReservationRepository();
 
     private static final String defaultPath = "/motorhouse";
     private static final String defaultFilePath = "motorhouses/";

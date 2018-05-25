@@ -11,11 +11,14 @@ public class PriceCalculator {
 
     //calculates price for the season
     public static double GetPrice(double price){
-        double setPrice = price;
-        LocalDate date = LocalDate.now();
+        return price(price, LocalDate.now().getMonthValue());
+    }
 
-        int month = date.getMonthValue();
+    public static double GetPrice(double price, LocalDate date){
+        return price(price, date.getMonthValue());
+    }
 
+    private static double price(double price, int month){
         for(int i : lowMonths){
             if(i == month){
                 return price;

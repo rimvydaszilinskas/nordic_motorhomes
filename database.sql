@@ -55,7 +55,9 @@ CREATE TABLE reservations(
 
 DROP TABLE IF EXISTS extras;
 CREATE TABLE extras(
-	id INT(5) NOT NULL AUTO_INCREMENT PRIMARY KEY
+	id INT(5) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    label varchar(25) NOT NULL,
+    price int(3) NOT NULL
 );
 
 DROP TABLE IF EXISTS reservationextras;
@@ -113,7 +115,7 @@ CREATE TABLE checkup(
 DROP TABLE IF EXISTS service;
 CREATE TABLE service(
 	id INT(5) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    reservation_id INT(5) NOT NULL,
+    motorhouse_id INT(5) NOT NULL,
     date_from DATE NOT NULL,
     date_to DATE NOT NULL,
     description VARCHAR(255),

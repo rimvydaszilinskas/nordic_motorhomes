@@ -10,53 +10,6 @@ public class Check extends MandatoryCheck{
 
     public Check(){}
 
-    public Check(int reservationID, LocalDate date, boolean lights, boolean chassis, boolean engine, boolean interior, boolean exterior, String notes) {
-        this.reservationID = reservationID;
-        this.date = date;
-        super.setLights(lights);
-        super.setChassis(chassis);
-        super.setEngine(engine);
-        super.setInterior(interior);
-        super.setExterior(exterior);
-        this.notes = notes;
-    }
-
-    public Check(int id, int reservationID, LocalDate date, boolean lights, boolean chassis, boolean engine, boolean interior, boolean exterior, String notes) {
-        this.id = id;
-        this.reservationID = reservationID;
-        this.date = date;
-        super.setLights(lights);
-        super.setChassis(chassis);
-        super.setEngine(engine);
-        super.setInterior(interior);
-        super.setExterior(exterior);
-        this.notes = notes;
-    }
-
-    public Check(int id, int reservationID, LocalDate date, int lights, int chassis, int engine, int interior, int exterior, String notes) {
-        this.id = id;
-        this.reservationID = reservationID;
-        this.date = date;
-        super.setLights(lights);
-        super.setChassis(chassis);
-        super.setEngine(engine);
-        super.setInterior(interior);
-        super.setExterior(exterior);
-        this.notes = notes;
-    }
-
-    public Check(int id, int reservationID, String date, boolean lights, boolean chassis, boolean engine, boolean interior, boolean exterior, String notes) {
-        this.id = id;
-        this.reservationID = reservationID;
-        setDate(date);
-        super.setLights(lights);
-        super.setChassis(chassis);
-        super.setEngine(engine);
-        super.setInterior(interior);
-        super.setExterior(exterior);
-        this.notes = notes;
-    }
-
     public Check(int id, int reservationID, String date, int lights, int chassis, int engine, int interior, int exterior, String notes) {
         this.id = id;
         this.reservationID = reservationID;

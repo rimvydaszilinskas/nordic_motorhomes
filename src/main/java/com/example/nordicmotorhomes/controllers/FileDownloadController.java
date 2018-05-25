@@ -20,7 +20,8 @@ public class FileDownloadController {
 
     private static final String FILEPATH = "files/";
     private static final String EXTENSION = ".xlsx";
-    private IPerson<Customer> customerRepository = new PersonRepository();
+
+    private IPerson<Customer> customerRepository = new CustomerRepository();
     private IReservation reservationRepository = new ReservationRepository();
     private IExtras extrasRepository = new ExtrasRepository();
     private IPayment paymentRepository = new PaymentRepository();

@@ -12,7 +12,7 @@ public class JSON implements IJSON{
     }
 
     @Override
-    public JSON add(String key, String value){
+    public IJSON add(String key, String value){
         StringBuilder str = new StringBuilder();
 
         if(value.length() > 2)
@@ -36,7 +36,7 @@ public class JSON implements IJSON{
     }
 
     @Override
-    public JSON add(String key, int value){
+    public IJSON add(String key, int value){
         StringBuilder str = new StringBuilder();
         if(length != 0)
             str.append(", ");
@@ -48,7 +48,7 @@ public class JSON implements IJSON{
     }
 
     @Override
-    public JSON addArray(String key, String... values){
+    public IJSON addArray(String key, String... values){
         StringBuilder str = new StringBuilder();
         if(length != 0)
             str.append(", ");
@@ -72,7 +72,7 @@ public class JSON implements IJSON{
     }
 
     @Override
-    public JSON add(String key, ArrayList<IJSON> jsons){
+    public IJSON add(String key, ArrayList<IJSON> jsons){
         StringBuilder str = new StringBuilder();
         if(length != 0)
             str.append(", ");
@@ -117,7 +117,7 @@ public class JSON implements IJSON{
     }
 
     @Override
-    public JSON merge(JSON json) {
+    public IJSON merge(IJSON json) {
         StringBuilder str = new StringBuilder(json.getJSON());
         str.deleteCharAt(0).deleteCharAt(str.toString().length()-1);
 
@@ -130,10 +130,10 @@ public class JSON implements IJSON{
     }
 
     @Override
-    public JSON merge(JSON... jsons) {
+    public IJSON merge(IJSON... jsons) {
         StringBuilder str;
 
-        for(JSON json : jsons){
+        for(IJSON json : jsons){
             if(length != 0) {
                 str = new StringBuilder(json.getJSON());
                 str.deleteCharAt(0).deleteCharAt(str.toString().length() - 1);

@@ -6,6 +6,7 @@ public class Delivery {
     double distance;
 
     public Delivery(int id, String address, double distance) {
+        this.id = id;
         this.address = address;
         this.distance = distance;
     }

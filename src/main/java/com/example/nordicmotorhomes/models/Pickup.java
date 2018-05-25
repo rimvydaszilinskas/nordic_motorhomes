@@ -17,13 +17,6 @@ public class Pickup {
         this.mileage = mileage;
     }
 
-    public Pickup(String date, double fuel, int reservationID, int mileage) {
-        setDate(date);
-        this.fuel = fuel;
-        this.reservationID = reservationID;
-        this.mileage = mileage;
-    }
-
     public Pickup(int id, LocalDate date, double fuel, int reservationID, int mileage) {
         this.id = id;
         this.date = date;
@@ -34,12 +27,6 @@ public class Pickup {
 
     public Pickup(LocalDate date, double fuel, int reservationID, int mileage) {
         this.date = date;
-        this.fuel = fuel;
-        this.reservationID = reservationID;
-        this.mileage = mileage;
-    }
-
-    public Pickup(double fuel, int reservationID, int mileage) {
         this.fuel = fuel;
         this.reservationID = reservationID;
         this.mileage = mileage;

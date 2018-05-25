@@ -278,7 +278,7 @@ public class ExcelWriter {
         boldStyle.setFont(font);
 
 
-        row = sheet.createRow(StartRow + rows);
+        row = sheet.getRow(StartRow + rows);
         rows += 2;
         cell = row.createCell(B);
         sheet.addMergedRegion(new CellRangeAddress(StartRow, StartRow, B, D));
@@ -287,15 +287,15 @@ public class ExcelWriter {
         cell.setCellStyle(boldStyle);
 
         //set base price
-        cell = row.createCell(E);
+        cell = row.getCell(E);
         cell.setCellValue(motorHouse.getPrice());
 
         //set duration
-        cell = row.createCell(F);
+        cell = row.getCell(F);
         cell.setCellValue(ChronoUnit.DAYS.between(reservation.getDateFrom(), reservation.getDateTo()));
 
         //set total row price
-        cell = row.createCell(G);
+        cell = row.getCell(G);
         cell.setCellValue(ChronoUnit.DAYS.between(reservation.getDateFrom(), reservation.getDateTo()) * motorHouse.getPrice());
 
         //insert all the deliveries
@@ -303,7 +303,7 @@ public class ExcelWriter {
             row = sheet.createRow(StartRow + rows);
             rows++;
 
-            cell = row.createCell(B);
+            cell = row.getCell(B);
             sheet.addMergedRegion(new CellRangeAddress(StartRow + rows - 1, StartRow + rows - 1, C, D));
             cell.setCellStyle(boldStyle);
             cell.setCellValue("Delivery");
@@ -314,30 +314,30 @@ public class ExcelWriter {
                 km += delivery.getDistance();
             }
 
-            cell = row.createCell(E);
+            cell = row.getCell(E);
             cell.setCellValue("0.70");
 
-            cell = row.createCell(F);
+            cell = row.getCell(F);
             cell.setCellValue(km + " km.");
 
-            cell = row.createCell(G);
+            cell = row.getCell(G);
             cell.setCellValue(km * 0.7);
         }
 
         if(extras.size() + rows < MaxRows ){
-            row = sheet.createRow(StartRow + rows);
+            row = sheet.getRow(StartRow + rows);
             rows++;
-            cell = row.createCell(C);
+            cell = row.getCell(C);
             sheet.addMergedRegion(new CellRangeAddress(StartRow + rows - 1, StartRow + rows - 1, C, D));
             cell.setCellStyle(boldStyle);
             cell.setCellValue("Extras:");
 
             for(Extra extra : extras){
-                row = sheet.createRow(StartRow + rows);
+                row = sheet.getRow(StartRow + rows);
                 rows++;
 
-                row.createCell(D).setCellValue(extra.getName());
-                row.createCell(G).setCellValue(extra.getPrice());
+                row.getCell(D).setCellValue(extra.getName());
+                row.getCell(G).setCellValue(extra.getPrice());
             }
         }
 
